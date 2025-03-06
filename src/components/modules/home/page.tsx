@@ -58,21 +58,29 @@ import { useEffect, useState } from "react";
 import { getAllTutors } from "@/services/User";
 import Link from "next/link";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { getAllReviewComments } from "@/services/User/ReviewComment";
+import { IReview } from "@/types/review";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
+  const [reviews, setReviews] = useState<IReview[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   console.log(tutors);
   console.log(error);
   console.log(loading);
+  console.log(reviews);
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
-        const data = await getAllTutors();
-        setTutors(data?.data);
+        const [tutorData, reviewData] = await Promise.all([
+          getAllTutors(),
+          getAllReviewComments(),
+        ]);
+        setTutors(tutorData?.data);
+        setReviews(reviewData?.data);
         setLoading(false);
       } catch (err: any) {
         setError(err.message);
@@ -123,21 +131,6 @@ const HomeComponent = () => {
         </div>
       </div>
 
-      {/* <div
-        className="
-      flex justify-center mt-5 px-10"
-      >
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/g6BtbIiJ_rc?si=Vfv21ayikJ_JSci6"
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        ></iframe>
-      </div> */}
       {/* =========================category section ========================= */}
       <div>
         <div className="px-10 mt-5 ">
@@ -368,21 +361,41 @@ const HomeComponent = () => {
       {/* =====================================student sayas section====================== */}
       <div className="mt-10 px-10 pt-10">
         <div>
-          <h2 className="text-xl md:text-2xl lg:text-4xl  ">
+          <h2 className="text-xl md:text-2xl lg:text-4xl mb-2">
             Our Student <span className="text-pink-500">Says</span>
           </h2>
         </div>
         <div>
           <Carousel>
             <CarouselContent>
-              {Array.from({ length: 10 }).map((_, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+              {reviews?.map((review) => (
+                <CarouselItem
+                  key={review._id}
+                  className="md:basis-1/2 lg:basis-1/3"
+                >
                   <div className="p-1">
-                    <Card>
-                      <CardContent className="flex aspect-square h-[100px] items-center justify-center p-6">
-                        <span className="text-3xl font-semibold">
-                          {index + 1}
-                        </span>
+                    <Card className="border-gray-300">
+                      <CardContent className="flex flex-col items-center justify-center p-4">
+                        <Image
+                          className="rounded-full"
+                          src={review.student.profileImage}
+                          width={100}
+                          height={200}
+                          alt={`${review.student.name}'s profile`}
+                        />
+                        <h3 className="text-lg font-semibold">
+                          {review.student.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                          {review.comment}
+                        </p>
+
+                        <div className="flex gap-1 text-sm md:text-sm lg:text-lg text-gray-700">
+                          <FaStar className="text-yellow-500" />
+                          <FaStar className="text-yellow-500" />
+                          <FaStarHalfAlt className="text-yellow-500" />
+                          <FaRegStar className="text-yellow-500" />
+                        </div>
                       </CardContent>
                     </Card>
                   </div>
@@ -426,8 +439,8 @@ const HomeComponent = () => {
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
                   Yes, you can reschedule or cancel a session according to the
-                  tutor's cancellation policy. Make sure to check the terms
-                  before booking.
+                  cancellation policy. Make sure to check the terms before
+                  booking.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">

@@ -24,6 +24,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, setIsLoading } = useUser();
+  const role = user?.role;
+  console.log(user);
   const handleLogOut = () => {
     logout();
     setIsLoading(true);
@@ -109,9 +111,12 @@ export default function Navbar() {
                   <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
-                    Dashboard
-                  </DropdownMenuItem>
+
+                  <Link href={`/${role}/dashboard`}>
+                    <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
                     My Shop
                   </DropdownMenuItem>

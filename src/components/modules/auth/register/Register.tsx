@@ -32,8 +32,15 @@ const RegisterForm = () => {
   const confirmPassword = form.watch("confirmPassword");
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const userData = {
+      name: data?.name,
+      email: data?.email,
+      password: data?.password,
+    };
+    console.log(userData);
+
     try {
-      const res = await registerUser(data);
+      const res = await registerUser(userData);
       console.log(res);
       if (res?.success) {
         toast.success(res?.message);
@@ -44,7 +51,7 @@ const RegisterForm = () => {
     }
   };
   return (
-    <div className="border border-gray-300 w-full flex-grow  max-w-md p-5 rounded">
+    <div className="w-full flex-grow  max-w-md p-5 rounded">
       <div className="flex items-center justify-center space-x-2 pb-2">
         <Logo />
         <h1 className="font-semibold text-xl">Register</h1>
@@ -63,7 +70,7 @@ const RegisterForm = () => {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    className="border border-gray-400"
+                    className="border border-gray-400 "
                     {...field}
                     value={field.value || ""}
                   />
@@ -77,10 +84,10 @@ const RegisterForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="mt-2">Email</FormLabel>
                 <FormControl>
                   <Input
-                    className="border border-gray-400"
+                    className="border border-gray-400 "
                     {...field}
                     value={field.value || ""}
                   />
@@ -90,12 +97,13 @@ const RegisterForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="mt-2">Password</FormLabel>
                 <FormControl>
                   <Input
                     className="border border-gray-400"
@@ -114,7 +122,7 @@ const RegisterForm = () => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel className="mt-2">Confirm Password</FormLabel>
                 <FormControl>
                   <Input
                     className="border border-gray-400"
@@ -131,15 +139,14 @@ const RegisterForm = () => {
                 ) : (
                   <FormMessage className="text-red-500" />
                 )}
-                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
 
-          <div className="w-full flex flex-grow flex-col space-y-1">
+          <div className="w-full flex flex-grow flex-col space-y-1 mt-2">
             <Button
               disabled={!!confirmPassword && password !== confirmPassword}
-              className="btn bg-rose-400 hover:bg-rose-500  "
+              className="roudend-full cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
               type="submit"
             >
               {isSubmitting ? "Registering..." : "Register"}

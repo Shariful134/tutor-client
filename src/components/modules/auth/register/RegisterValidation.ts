@@ -11,7 +11,7 @@ export const registrationSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string({ required_error: "password is required" })
-    .min(8, "password must be 8 characters"),
+    .min(6, "password must be 6 characters"),
   confirmPassword: z
     .string({ required_error: "confirm password is required" })
     .min(1),

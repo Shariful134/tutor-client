@@ -18,10 +18,11 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser, rechaptchaTokenVerification } from "@/services/authService";
 import { toast } from "sonner";
-import { loginSchema } from "./loginValidation";
+
 import ReCAPTCHA from "react-google-recaptcha";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { loginSchema } from "./loginValidation";
 
 const LoginForm = () => {
   const form = useForm({
@@ -37,8 +38,6 @@ const LoginForm = () => {
 
   const [rechaptchaStatus, setRechaptchaStatus] = useState(false);
   const rechaptchaHandler = async (value: string | null) => {
-    console.log(value);
-
     try {
       const res = await rechaptchaTokenVerification(value!);
       if (res.success) {
@@ -50,6 +49,7 @@ const LoginForm = () => {
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log(data);
     try {
       const res = await loginUser(data);
       console.log(res);
@@ -58,7 +58,7 @@ const LoginForm = () => {
         if (redirect) {
           router.push(redirect);
         } else {
-          router.push("/profile");
+          router.push("/");
         }
       } else toast.error(res?.message);
     } catch (error) {
@@ -120,7 +120,7 @@ const LoginForm = () => {
             />
             <Button
               disabled={rechaptchaStatus ? false : true}
-              className="btn bg-rose-400 hover:bg-rose-500  "
+              className="roudend-full cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
               type="submit"
             >
               {isSubmitting ? "Loging..." : "login"}
