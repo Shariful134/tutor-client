@@ -3,11 +3,12 @@
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
+import { revalidateTag } from "next/cache";
 
-export const registerUser = async (userData: FieldValues) => {
+export const registerStudent = async (userData: FieldValues) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register-as-student`,
       {
         method: "POST",
         headers: {
@@ -18,17 +19,82 @@ export const registerUser = async (userData: FieldValues) => {
     );
 
     const result = await res.json();
-
-    if (result.success) {
-      (await cookies()).set("accessToken", result.data.accessToken);
-    }
     return result;
   } catch (error: any) {
     return Error(error);
   }
 };
 
+export const registerTutor = async (userData: FieldValues) => {
+  // const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register-as-tutor`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
+    const result = await res.json();
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+// update tutorData
+export const updateTutorData = async (
+  userData: FormData,
+  id: string
+): Promise<any> => {
+  const token = (await cookies()).get("accessToken")!.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/update-as-tutor/${id}`,
+      {
+        method: "PATCH",
+        body: userData,
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    revalidateTag("User");
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+// update Profile
+export const updateProfile = async (
+  ProfileImg: FormData,
+  id: string
+): Promise<any> => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/changeProfileImg/${id}`,
+      {
+        method: "PATCH",
+        body: ProfileImg,
+        headers: {
+          Authorization: (await cookies()).get("accessToken")!.value,
+        },
+      }
+    );
+    revalidateTag("User");
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
 export const loginUser = async (userData: FieldValues) => {
+  console.log(userData);
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
       method: "POST",

@@ -2,12 +2,9 @@ import RegisterForm from "@/components/modules/auth/register/Register";
 
 const Register = () => {
   return (
-    <div className="h-screen w-screen flex ">
+    <div className="pt-5 w-screen flex justify-center items-center">
       <RegisterForm />
     </div>
-    // <div className="h-screen w-screen flex justify-center items-center">
-    //   <RegisterForm />
-    // </div>
   );
 };
 

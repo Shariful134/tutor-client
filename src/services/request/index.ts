@@ -1,0 +1,73 @@
+"use server";
+
+import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
+import { FieldValues } from "react-hook-form";
+
+//request booking
+export const requestBooking = async (requestData: FieldValues) => {
+  const token = (await cookies()).get("accessToken")!.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/request-booking`,
+
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(requestData),
+      }
+    );
+
+    const result = await res.json();
+    revalidateTag("bookings");
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+//accept booking
+export const acceptBooking = async (id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/accept-booking/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    const result = await res.json();
+    revalidateTag("bookings");
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+//Cancel or delete booking
+export const cancelBooking = async (id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/delete-booking/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    const result = await res.json();
+    revalidateTag("bookings");
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};

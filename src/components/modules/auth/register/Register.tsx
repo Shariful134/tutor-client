@@ -15,7 +15,7 @@ import Link from "next/link";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { registrationSchema } from "./RegisterValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerUser } from "@/services/authService";
+import { registerStudent } from "@/services/authService";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 const RegisterForm = () => {
@@ -40,7 +40,7 @@ const RegisterForm = () => {
     console.log(userData);
 
     try {
-      const res = await registerUser(userData);
+      const res = await registerStudent(userData);
       console.log(res);
       if (res?.success) {
         toast.success(res?.message);
@@ -51,7 +51,7 @@ const RegisterForm = () => {
     }
   };
   return (
-    <div className="w-full flex-grow  max-w-md p-5 rounded">
+    <div className=" border border-gray-300 w-full flex-grow  max-w-md p-5 rounded">
       <div className="flex items-center justify-center space-x-2 pb-2">
         <Logo />
         <h1 className="font-semibold text-xl">Register</h1>
@@ -156,6 +156,13 @@ const RegisterForm = () => {
               All ready have an account?{" "}
               <Link className="text-cyan-500" href="/login">
                 Login
+              </Link>
+            </p>
+            <p className="text-sm text-extralight text-gray-600">
+              {" "}
+              As a Tutor{" "}
+              <Link className="text-cyan-500" href="/register/tutor">
+                Registration
               </Link>
             </p>
           </div>

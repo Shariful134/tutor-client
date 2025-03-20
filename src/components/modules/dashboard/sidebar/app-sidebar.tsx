@@ -24,6 +24,7 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 
 // This is sample data.
+
 const data = {
   navMain: [
     {
@@ -32,6 +33,36 @@ const data = {
       icon: SquareTerminal,
       isActive: true,
     },
+    {
+      title: "My Bookings",
+      url: "/tutor/bookings",
+      icon: Bot,
+      items: [
+        {
+          title: "Bookings Request",
+          url: "/tutor/bookings",
+        },
+      ],
+    },
+    // {
+    //   title: "My Bookings",
+    //   url: "/user/shop/products",
+    //   icon: Bot,
+    //   items: [
+    //     {
+    //       title: "Manage Products",
+    //       url: "/user/shop/products",
+    //     },
+    //     {
+    //       title: "Manage Categories",
+    //       url: "/user/shop/category",
+    //     },
+    //     {
+    //       title: "Manage Brands",
+    //       url: "/user/shop/brand",
+    //     },
+    //   ],
+    // },
     {
       title: "Shop",
       url: "/user/shop/products",
@@ -53,15 +84,9 @@ const data = {
     },
 
     {
-      title: "Settings",
-      url: "#",
+      title: "Setting",
+      url: "/tutor",
       icon: Settings,
-      items: [
-        {
-          title: "Profile",
-          url: "/profile",
-        },
-      ],
     },
   ],
   navSecondary: [

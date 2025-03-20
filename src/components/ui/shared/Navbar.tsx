@@ -19,13 +19,46 @@ import { useUser } from "@/context/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { protectedRoutes } from "@/constant";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { getAllUsers } from "@/services/User";
+import { IUsers } from "@/types";
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setIsLoading } = useUser();
+  const { user, isLoading, setIsLoading } = useUser();
   const role = user?.role;
-  console.log(user);
+
+  const [users, setUsers] = useState<IUsers[] | []>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log(error);
+  console.log(loading);
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        setLoading(true);
+        const usersData = await getAllUsers();
+        setUsers(usersData?.data);
+
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchTutors();
+  }, []);
+
+  const currentUser = users?.find(
+    (item: IUsers) => item.email === user?.userEmail
+  );
+
+  const profileImg = currentUser?.profileImage;
+  // console.log(profileImg);
+
   const handleLogOut = () => {
     logout();
     setIsLoading(true);
@@ -33,6 +66,10 @@ export default function Navbar() {
       router.push("/");
     }
   };
+  if (isLoading) {
+    return <p>loading....</p>;
+  }
+
   return (
     <header className="border-b bg-gray-200 border-gray-300 w-full fixed z-1">
       <div className="container flex justify-between  items-center h-16 px-10 mx-auto">
@@ -44,13 +81,7 @@ export default function Navbar() {
             alt="tutorlink"
           ></Image>
         </h1>
-        {/* <div className="max-w-md flex-grow">
-          <input
-            type="text"
-            placeholder="Search for products"
-            className=" w-full max-w-6xl rounded-full border border-gray-400 px-5 py-2"
-          />
-        </div> */}
+
         <nav className="flex gap-4 items-center">
           <Link
             className={
@@ -89,40 +120,46 @@ export default function Navbar() {
 
           {user ? (
             <>
-              <Link href={"create-shop"}>
-                <Button
-                  variant="outline"
-                  className="rounded-full border border-gray-300  hover:bg-gray-400"
-                >
-                  Create Shop
-                </Button>
-              </Link>
-
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar className="size-10 rouded-full ">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    {profileImg ? (
+                      <AvatarImage src={profileImg} />
+                    ) : (
+                      <AvatarImage src="https://github.com/shadcn.png" />
+                    )}
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="border border-gray-400 bg-white mt-2">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuContent className="border border-gray-400 bg-white mt-2 ">
+                  <DropdownMenuLabel className="font-semibold">
+                    <div className="flex justify-center flex-col items-center gap-2">
+                      <Avatar className="size-10 rouded-full ">
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <Link href={`/${role}/dashboard`}>
+                        <Button className="roudend-full border-0 btn cursor-pointer bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                          {" "}
+                          View Profile
+                        </Button>
+                      </Link>
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
-                    Profile
-                  </DropdownMenuItem>
 
                   <Link href={`/${role}/dashboard`}>
-                    <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
+                    <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2 cursor-pointer">
                       Dashboard
                     </DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2">
-                    My Shop
-                  </DropdownMenuItem>
+                  <Link href={`/${role}/bookings`}>
+                    <DropdownMenuItem className="hover:bg-gray-200 px-3 py-2 cursor-pointer">
+                      Bookings
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuSeparator className="border-b border-gray-400" />
                   <DropdownMenuItem
-                    className="hover:bg-gray-200 px-3 py-2"
+                    className="hover:bg-gray-200 px-3 py-2 cursor-pointer"
                     onClick={handleLogOut}
                   >
                     <LogOut /> LogOut
@@ -134,7 +171,7 @@ export default function Navbar() {
             <Link href={"/login"}>
               <Button
                 variant="outline"
-                className="roudend-full border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                className="roudend-full btn cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
               >
                 SignIn
               </Button>

@@ -17,6 +17,7 @@ const NMImageUploader = ({
 }: TImageUploaderProps) => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
+    console.log(event.target.files);
 
     setImageFiels((prev) => [...prev, file]);
 
@@ -42,7 +43,7 @@ const NMImageUploader = ({
       />
       <label
         htmlFor="image-upload"
-        className="w-full h-36 md:size-36 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer text-center text-sm text-gray-500 hover:bg-gray-50 transition"
+        className="w-full h-20 mb-1 md:size-36 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-full cursor-pointer text-center text-sm text-gray-500 hover:bg-gray-50 transition"
       >
         {label}
       </label>

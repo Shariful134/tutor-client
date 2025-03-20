@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "./services/authService";
 type Role = keyof typeof roleBasedPrivateRotes;
 
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/login", "/register", "/", "/tutors", "/about"];
 
 const roleBasedPrivateRotes = {
-  user: [/^\/user/, /^\/create-shop/],
+  user: [/^\/user/, /^\/create-shop/, /^\/tutor/, /^\/student/, /^\/student/],
+  student: [/^\/student/, /^\/booking/],
+  tutor: [/^\/tutor/],
   admin: [/^\/admin/],
 };
 
@@ -32,6 +34,10 @@ export const middleware = async (request: NextRequest) => {
       return NextResponse.next();
     }
   }
+
+  if (pathname.startsWith("/booking") && userInfo.role !== "student") {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
   return NextResponse.redirect(new URL("/", request.url));
 };
 
@@ -40,8 +46,14 @@ export const config = {
     "/login",
     "/create-shop",
     "/admin",
-    "/admin/:page",
+    "/admin/:path*",
     "/user",
-    "/user/:page",
+    "/user/:path*",
+    "/student",
+    "/student/:path*",
+    "/tutor",
+    "/tutor/:path*",
+    "/booking",
+    "/booking/:path*",
   ],
 };

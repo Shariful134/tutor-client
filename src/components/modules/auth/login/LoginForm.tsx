@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Logo from "@/app/assest/svgs/Logo";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginSchema } from "./loginValidation";
+import { useUser } from "@/context/UserContext";
 
 const LoginForm = () => {
   const form = useForm({
@@ -35,6 +37,7 @@ const LoginForm = () => {
   const searchparams = useSearchParams();
   const redirect = searchparams.get("redirectPath");
   const router = useRouter();
+  const { setIsLoading } = useUser();
 
   const [rechaptchaStatus, setRechaptchaStatus] = useState(false);
   const rechaptchaHandler = async (value: string | null) => {
@@ -52,6 +55,7 @@ const LoginForm = () => {
     console.log(data);
     try {
       const res = await loginUser(data);
+      setIsLoading(true);
       console.log(res);
       if (res?.success) {
         toast.success(res?.message);
@@ -119,7 +123,7 @@ const LoginForm = () => {
               onChange={rechaptchaHandler}
             />
             <Button
-              disabled={rechaptchaStatus ? false : true}
+              // disabled={rechaptchaStatus ? false : true}
               className="roudend-full cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
               type="submit"
             >

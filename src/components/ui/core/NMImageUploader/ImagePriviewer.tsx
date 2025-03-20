@@ -26,14 +26,14 @@ const ImagePreviewer = ({
       {imagePreview.map((preview, index) => (
         <div
           key={index}
-          className="relative w-36 h-36 rounded-md overflow-hidden border border-dashed border-gray-300"
+          className="relative w-36 h-36 mb-1 rounded-md overflow-hidden border border-dashed border-gray-300"
         >
           <Image
             width={500}
             height={500}
             src={preview}
             alt={`Preview ${index + 1}`}
-            className="object-cover w-full h-full"
+            className="object-cover rounded-full w-full h-full"
           />
           <Button
             type="button"

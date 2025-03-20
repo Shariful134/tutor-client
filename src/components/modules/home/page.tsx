@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Image from "next/image";
 import banner from "../../../app/assest/images/banner-2.png";
@@ -55,32 +56,47 @@ export interface ITutor {
 import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
-import { getAllTutors } from "@/services/User";
+import { getAllTutors, getAllUsers } from "@/services/User";
 import Link from "next/link";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { getAllReviewComments } from "@/services/User/ReviewComment";
 import { IReview } from "@/types/review";
+import { useUser } from "@/context/UserContext";
+import { requestBooking } from "@/services/request";
+import { toast } from "sonner";
+import { getAllBooking } from "@/services/booking";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
+  const [users, setUsers] = useState<ITutor[] | []>([]);
   const [reviews, setReviews] = useState<IReview[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(tutors);
-  console.log(error);
-  console.log(loading);
-  console.log(reviews);
+  const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
+
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
-        const [tutorData, reviewData] = await Promise.all([
-          getAllTutors(),
-          getAllReviewComments(),
-        ]);
+        const [tutorData, reviewData, usersData, bookingsData] =
+          await Promise.all([
+            getAllTutors(),
+            getAllReviewComments(),
+            getAllUsers(),
+            getAllBooking(),
+          ]);
         setTutors(tutorData?.data);
         setReviews(reviewData?.data);
+        setUsers(usersData?.data);
+        if (bookingsData?.data) {
+          const tutorIdList = bookingsData?.data?.filter(
+            (item: any) => item.tutor
+          );
+          setRequestedTutors(tutorIdList);
+        }
+
         setLoading(false);
       } catch (err: any) {
         setError(err.message);
@@ -90,10 +106,33 @@ const HomeComponent = () => {
     fetchTutors();
   }, []);
 
+  const currentUser = users?.find((item) => item.email === user?.userEmail);
+
+  //handle Booking Request
+  const handleRequest = async (id: string) => {
+    const requestData = {
+      student: currentUser?._id,
+      tutor: id,
+    };
+
+    try {
+      const res = await requestBooking(requestData);
+      if (res.success) {
+        toast.success(res.message);
+        setRequestedTutors((prev) => [...prev, id]);
+      } else {
+        toast.success(res.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log("requestedTutors: ", requestedTutors);
   return (
     <div>
       {/* =============================Banner section=========================== */}
-      <div className="flex flex-col md:flex-row px-5 md:px-10 items-center">
+      <div className="flex flex-col md:flex-row px-5 md:px-10 items-center pt-20">
         <div className="pt-5 text-center md:text-start">
           <h2 className="text-2xl md:text-3xl lg:text-5xl  ">
             Learn Better, <span className="text-pink-500">Achieve More!</span>
@@ -133,7 +172,7 @@ const HomeComponent = () => {
 
       {/* =========================category section ========================= */}
       <div>
-        <div className="px-10 mt-5 ">
+        <div className="px-10 mt-5  ">
           <h2 className="text-xl md:text-2xl lg:text-4xl text-center md:text-start  mb-5 ">
             Course <span className="text-pink-500">Categories ____</span>
           </h2>
@@ -306,14 +345,14 @@ const HomeComponent = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-3">
-          {tutors?.map((tutor) => (
+          {tutors?.slice(0, 8).map((tutor) => (
             <div
               key={tutor._id}
               className="card bg-base-100 w-[95%]  border border-gray-200 hover:shadow-lg"
             >
               <figure>
                 <Image
-                  src={tutor.profileImage}
+                  src={tutor?.profileImage}
                   width={1100}
                   height={650}
                   alt="BannerImg"
@@ -341,14 +380,35 @@ const HomeComponent = () => {
                     <FaRegStar className="text-yellow-500" />
                   </div>
                 </div>
-                <div className="card-actions justify-between items-center">
-                  <Link href={"/#"}>
-                    <Button className="roudend-ful hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                <div className=" flex flex-wrap gap-y-2 justify-between  items-center">
+                  <Link href={`/tutors/${tutor._id}`}>
+                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
                       Details
                     </Button>
                   </Link>
-                  <Link href={"/#"}>
-                    <Button className="roudend-ful hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+
+                  {user?.role === "student" && (
+                    <div>
+                      {requestedTutors?.includes(tutor?._id) ? (
+                        <Button
+                          onClick={() => handleRequest(tutor?._id)}
+                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                        >
+                          Request
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleRequest(tutor?._id)}
+                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </div>
+                  )}
+
+                  <Link href={`/booking/${tutor._id}`}>
+                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
                       Booking
                     </Button>
                   </Link>
@@ -356,6 +416,13 @@ const HomeComponent = () => {
               </div>
             </div>
           ))}
+        </div>
+        <div className="mx-auto text-center mt-5">
+          <Link href={"/tutors"}>
+            <Button className="roudend-full cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+              View All
+            </Button>
+          </Link>
         </div>
       </div>
       {/* =====================================student sayas section====================== */}
