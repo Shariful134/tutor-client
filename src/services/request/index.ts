@@ -73,6 +73,29 @@ export const cancelBooking = async (id: string) => {
   }
 };
 
+// booking confirmation
+export const confirmBooking = async (orderData: FieldValues, id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/create/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(orderData),
+      }
+    );
+
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
 // getAll Bookings
 export const getAllBooking = async () => {
   const token = (await cookies()).get("accessToken")!.value;
@@ -98,7 +121,7 @@ export const getAllBooking = async () => {
   }
 };
 
-// getAll Bookings-2
+// getAll Bookings-with populate(student,tutor)
 export const getAllBookings = async () => {
   const token = (await cookies()).get("accessToken")!.value;
 

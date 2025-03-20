@@ -1,9 +1,11 @@
 import BookingsComponent from "@/components/modules/booking/BookingsComponent";
-interface bookingPageProps {
-  params: { bookingId: string };
-}
-const BookingPage = async ({ params }: bookingPageProps) => {
-  const bookingId = await params?.bookingId;
+
+const BookingPage = async ({
+  params,
+}: {
+  params: Promise<{ bookingId: string }>;
+}) => {
+  const { bookingId } = await params;
   return (
     <div className="pt-20">
       <BookingsComponent tutorId={bookingId}></BookingsComponent>
