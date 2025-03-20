@@ -50,6 +50,7 @@ export const acceptBooking = async (id: string) => {
     return Error(error);
   }
 };
+
 //Cancel or delete booking
 export const cancelBooking = async (id: string) => {
   const token = (await cookies()).get("accessToken")!.value;
@@ -67,6 +68,56 @@ export const cancelBooking = async (id: string) => {
     const result = await res.json();
     revalidateTag("bookings");
     return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+// getAll Bookings
+export const getAllBooking = async () => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/get`,
+
+      {
+        next: {
+          tags: ["bookings"],
+        },
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+// getAll Bookings-2
+export const getAllBookings = async () => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/get-allBookings`,
+
+      {
+        next: {
+          tags: ["bookings"],
+        },
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    return res.json();
   } catch (error: any) {
     return Error(error);
   }

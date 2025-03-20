@@ -2,14 +2,18 @@
 import { useUser } from "@/context/UserContext";
 import { getAllUsers } from "@/services/User";
 import { useEffect, useState } from "react";
-import { getAllBooking } from "@/services/booking";
+
 import { ITutor } from "../home/page";
 import { NMTable } from "@/components/ui/core/NMTable";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TBooking } from "@/types/bookings";
-import { acceptBooking, cancelBooking } from "@/services/request";
+import {
+  acceptBooking,
+  cancelBooking,
+  getAllBooking,
+} from "@/services/request";
 
 const BookingRequest = () => {
   const { user, setIsLoading } = useUser();
@@ -98,7 +102,7 @@ const BookingRequest = () => {
     },
     {
       accessorKey: "bookingRequest",
-      header: () => <div className="text-start w-8 ">bookingRequest</div>,
+      header: () => <div className="text-start w-8 ">Request Status</div>,
       cell: ({ row }) => {
         return (
           <div className="flex items-center  space-x-3">

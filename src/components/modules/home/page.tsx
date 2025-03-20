@@ -62,9 +62,8 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { getAllReviewComments } from "@/services/User/ReviewComment";
 import { IReview } from "@/types/review";
 import { useUser } from "@/context/UserContext";
-import { requestBooking } from "@/services/request";
+import { getAllBooking, requestBooking } from "@/services/request";
 import { toast } from "sonner";
-import { getAllBooking } from "@/services/booking";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
@@ -73,28 +72,35 @@ const HomeComponent = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
-
+  const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
   const { user } = useUser();
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
-        const [tutorData, reviewData, usersData, bookingsData] =
-          await Promise.all([
-            getAllTutors(),
-            getAllReviewComments(),
-            getAllUsers(),
-            getAllBooking(),
-          ]);
-        setTutors(tutorData?.data);
+        const [reviewData, usersData, bookingsData] = await Promise.all([
+          getAllReviewComments(),
+          getAllUsers(),
+          getAllBooking(),
+        ]);
         setReviews(reviewData?.data);
         setUsers(usersData?.data);
+        const allTutor = usersData?.data?.filter(
+          (item: ITutor) => item.role === "tutor"
+        );
+        setTutors(allTutor);
         if (bookingsData?.data) {
-          const tutorIdList = bookingsData?.data?.filter(
+          const tutorIdList = bookingsData?.data?.map(
             (item: any) => item.tutor
           );
           setRequestedTutors(tutorIdList);
+
+          //filter out the checking accepted request
+          const acceptedTutorId = bookingsData?.data
+            ?.filter((item: any) => item.bookingRequest === true)
+            .map((item: any) => item.tutor);
+          setAccetedTutors(acceptedTutorId);
         }
 
         setLoading(false);
@@ -107,7 +113,8 @@ const HomeComponent = () => {
   }, []);
 
   const currentUser = users?.find((item) => item.email === user?.userEmail);
-
+  console.log(acceptedTutors);
+  // console.log(tutors);
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {
@@ -117,6 +124,7 @@ const HomeComponent = () => {
 
     try {
       const res = await requestBooking(requestData);
+
       if (res.success) {
         toast.success(res.message);
         setRequestedTutors((prev) => [...prev, id]);
@@ -128,7 +136,7 @@ const HomeComponent = () => {
     }
   };
 
-  console.log("requestedTutors: ", requestedTutors);
+  // console.log("requestedTutors: ", requestedTutors);
   return (
     <div>
       {/* =============================Banner section=========================== */}
@@ -389,7 +397,14 @@ const HomeComponent = () => {
 
                   {user?.role === "student" && (
                     <div>
-                      {requestedTutors?.includes(tutor?._id) ? (
+                      {acceptedTutors?.includes(tutor?._id) ? (
+                        <Button
+                          onClick={() => handleRequest(tutor?._id)}
+                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                        >
+                          Accpted
+                        </Button>
+                      ) : requestedTutors?.includes(tutor?._id) ? (
                         <Button
                           onClick={() => handleRequest(tutor?._id)}
                           className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
