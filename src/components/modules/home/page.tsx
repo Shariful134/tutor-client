@@ -62,14 +62,18 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { getAllReviewComments } from "@/services/User/ReviewComment";
 import { IReview } from "@/types/review";
 import { useUser } from "@/context/UserContext";
-import { getAllBooking, requestBooking } from "@/services/request";
+import {
+  getAllBooking,
+  getAllBookings,
+  requestBooking,
+} from "@/services/request";
 import { toast } from "sonner";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
   const [users, setUsers] = useState<ITutor[] | []>([]);
   const [reviews, setReviews] = useState<IReview[] | []>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
@@ -101,6 +105,7 @@ const HomeComponent = () => {
             ?.filter((item: any) => item.bookingRequest === true)
             .map((item: any) => item.tutor);
           setAccetedTutors(acceptedTutorId);
+          setLoading(false);
         }
 
         setLoading(false);
@@ -114,7 +119,7 @@ const HomeComponent = () => {
 
   const currentUser = users?.find((item) => item.email === user?.userEmail);
   console.log(acceptedTutors);
-  // console.log(tutors);
+  console.log("tutors: ", tutors);
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {

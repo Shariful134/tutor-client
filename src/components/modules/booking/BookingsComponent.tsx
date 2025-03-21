@@ -86,19 +86,17 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
       }
     };
     fetchTutors();
-  }, [user?.userEmail, tutorId, student, bookings]);
+  }, [user?.userEmail, tutorId]);
 
-  // const currentBookingStudent = bookings?.find(
-  //   (booking) => booking.student._id === studentId
-  // );
   useEffect(() => {
     if (bookings.length > 0 && studentId) {
       const foundBooking = bookings.find(
-        (booking) => booking.student._id === studentId
+        (booking) =>
+          booking.student._id === studentId && booking.tutor._id === tutorId
       );
       setCurrentBookingStudent(foundBooking || null);
     }
-  }, [bookings, studentId]);
+  }, [bookings, studentId, tutorId]);
   //calculate totalPrice
   useEffect(() => {
     const newPrice = Number(tutor?.hourlyRate) * time;
@@ -107,16 +105,8 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
     form.setValue("totalPrice", newPrice);
   }, [time, calculatedPrice, tutor, form]);
 
-  //use loading
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     toast.loading("Processing Order...", { id: "bookingLoading" });
-  //   } else {
-  //     toast.dismiss("bookingLoading");
-  //   }
-  // }, [isLoading]);
-
   const currentBookingId = currentBookingStudent?._id ?? "";
+  console.log("currentBookingStudent: ", currentBookingStudent);
   const onSubmit = async (data: FieldValues) => {
     const orderData = {
       ...data,
@@ -124,8 +114,8 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
       totalPrice,
       student: studentId,
     };
-    console.log("orderData", orderData);
-    console.log("user", user);
+    // console.log("orderData", orderData);
+    // console.log("user", user);
     const toastId = toast.loading("Booking Processing...");
     try {
       const res = await confirmBooking(orderData, currentBookingId);
@@ -283,11 +273,17 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
               >
                 {isSubmitting ? "Booking..." : "Booking Confirm"}
               </Button>
-              {!currentBookingStudent?.bookingRequest && (
-                <p className="text-red-600 text-sm ">
-                  Please Wait Request Approval by Tutor
-                </p>
-              )}
+              {currentBookingStudent
+                ? !currentBookingStudent?.bookingRequest && (
+                    <p className="text-red-600 text-sm ">
+                      Please Wait for the Tutor Approval
+                    </p>
+                  )
+                : currentBookingStudent === null && (
+                    <p className="text-red-600 text-sm ">
+                      Please Send a Request to This Tutor
+                    </p>
+                  )}
             </div>
           </form>
         </Form>
