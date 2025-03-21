@@ -83,29 +83,33 @@ const HomeComponent = () => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
-        const [reviewData, usersData, bookingsData] = await Promise.all([
-          getAllReviewComments(),
-          getAllUsers(),
-          getAllBooking(),
-        ]);
-        setReviews(reviewData?.data);
-        setUsers(usersData?.data);
+        const usersData = await getAllUsers();
         const allTutor = usersData?.data?.filter(
           (item: ITutor) => item.role === "tutor"
         );
         setTutors(allTutor);
-        if (bookingsData?.data) {
-          const tutorIdList = bookingsData?.data?.map(
-            (item: any) => item.tutor
-          );
-          setRequestedTutors(tutorIdList);
+        console.log("testData: ", usersData);
+        if (user) {
+          const [reviewData, bookingsData] = await Promise.all([
+            getAllReviewComments(),
+            getAllBooking(),
+          ]);
+          setReviews(reviewData?.data);
+          setUsers(usersData?.data);
 
-          //filter out the checking accepted request
-          const acceptedTutorId = bookingsData?.data
-            ?.filter((item: any) => item.bookingRequest === true)
-            .map((item: any) => item.tutor);
-          setAccetedTutors(acceptedTutorId);
-          setLoading(false);
+          if (bookingsData?.data) {
+            const tutorIdList = bookingsData?.data?.map(
+              (item: any) => item.tutor
+            );
+            setRequestedTutors(tutorIdList);
+
+            //filter out the checking accepted request
+            const acceptedTutorId = bookingsData?.data
+              ?.filter((item: any) => item.bookingRequest === true)
+              .map((item: any) => item.tutor);
+            setAccetedTutors(acceptedTutorId);
+            setLoading(false);
+          }
         }
 
         setLoading(false);
