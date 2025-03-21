@@ -36,6 +36,9 @@ const TutorDetailsComponent = async ({ id }: { id: string }) => {
               ( {tutorData?.gradeLevel})
             </p>
           </div>
+          <p className=" text-sm md:text-sm font-semibold lg:text-lg text-gray-700 ">
+            {tutorData?.category}
+          </p>
           <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
             <span className="text-gray-900">Subject: </span>{" "}
             {tutorData?.subjects?.join(", ")}
@@ -44,16 +47,13 @@ const TutorDetailsComponent = async ({ id }: { id: string }) => {
             <span className="text-gray-900">HourlyRatelity:</span>{" "}
             {tutorData?.hourlyRate} $
           </p>
-          <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-            Category: {tutorData?.category}
-          </p>
 
           <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
             Phone: {tutorData?.phoneNumber}
           </p>
 
           <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-            <span className="text-gray-900"> Avilability:</span>{" "}
+            <span className="text-gray-900"> </span>{" "}
             {tutorData?.availability
               ?.map(
                 (avail: { day: string; time: string }) =>

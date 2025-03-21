@@ -122,8 +122,8 @@ const HomeComponent = () => {
   }, []);
 
   const currentUser = users?.find((item) => item.email === user?.userEmail);
-  console.log(acceptedTutors);
-  console.log("tutors: ", tutors);
+  // console.log(acceptedTutors);
+
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {
@@ -144,7 +144,10 @@ const HomeComponent = () => {
       console.log(error);
     }
   };
-
+  console.log("tutors: ", tutors);
+  const tutorids = tutors?.find((item) => item._id);
+  console.log("tutorids", tutorids);
+  // {tutors?.slice(0, 8).map((tutor, index) => (
   // console.log("requestedTutors: ", requestedTutors);
   return (
     <div>
@@ -176,14 +179,38 @@ const HomeComponent = () => {
           </Button>
         </div>
         <div className="flex justify-center">
-          <Image src={banner} width={1100} height={650} alt="BannerImg"></Image>
+          <Image
+            src={banner}
+            priority={true}
+            width={1100}
+            height={650}
+            alt="BannerImg"
+          ></Image>
         </div>
       </div>
       <div>
         <div className=" flex justify-center items-center bg-gray-200 px-10">
-          <Image src={bkash} width={100} height={110} alt="BannerImg"></Image>
-          <Image src={nagad} width={100} height={110} alt="BannerImg"></Image>
-          <Image src={rocket} width={100} height={110} alt="BannerImg"></Image>
+          <Image
+            src={bkash}
+            priority={true}
+            width={100}
+            height={110}
+            alt="BannerImg"
+          ></Image>
+          <Image
+            src={nagad}
+            priority={true}
+            width={100}
+            height={110}
+            alt="BannerImg"
+          ></Image>
+          <Image
+            src={rocket}
+            priority={true}
+            width={100}
+            height={110}
+            alt="BannerImg"
+          ></Image>
         </div>
       </div>
 
@@ -200,6 +227,7 @@ const HomeComponent = () => {
                   <CardContent className="flex flex-col items-center">
                     <Image
                       className=""
+                      priority={true}
                       src={computer}
                       width={100}
                       height={100}
@@ -224,6 +252,7 @@ const HomeComponent = () => {
                     <Image
                       className=""
                       src={english}
+                      priority={true}
                       width={100}
                       height={100}
                       alt="BannerImg"
@@ -247,6 +276,7 @@ const HomeComponent = () => {
                     <Image
                       className=""
                       src={math}
+                      priority={true}
                       width={100}
                       height={100}
                       alt="BannerImg"
@@ -270,6 +300,7 @@ const HomeComponent = () => {
                     <Image
                       className=""
                       src={arts}
+                      priority={true}
                       width={100}
                       height={100}
                       alt="BannerImg"
@@ -293,6 +324,7 @@ const HomeComponent = () => {
                     <Image
                       className=""
                       src={science}
+                      priority={true}
                       width={100}
                       height={100}
                       alt="BannerImg"
@@ -318,7 +350,13 @@ const HomeComponent = () => {
       {/* =============================benifit section======================== */}
       <div className="flex flex-col-reverse md:flex-row px-5 md:px-10 items-center gap-5 mt-10 pt-10">
         <div className="flex justify-center">
-          <Image src={groupd} width={1100} height={650} alt="BannerImg"></Image>
+          <Image
+            src={groupd}
+            width={1100}
+            priority={true}
+            height={650}
+            alt="BannerImg"
+          ></Image>
         </div>
         <div className="pt-5 text-start">
           <h2 className="text-xl md:text-2xl lg:text-4xl  ">
@@ -362,14 +400,15 @@ const HomeComponent = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-3">
-          {tutors?.slice(0, 8).map((tutor) => (
+          {tutors?.slice(0, 8).map((tutor, index) => (
             <div
-              key={tutor._id}
+              key={tutor._id || index}
               className="card bg-base-100 w-[95%]  border border-gray-200 hover:shadow-lg"
             >
               <figure>
                 <Image
                   src={tutor?.profileImage}
+                  priority={true}
                   width={1100}
                   height={650}
                   alt="BannerImg"
@@ -452,7 +491,7 @@ const HomeComponent = () => {
       {/* =====================================student sayas section====================== */}
       <div className="mt-10 px-10 pt-10">
         <div>
-          <h2 className="text-xl md:text-2xl lg:text-4xl mb-2">
+          <h2 className="text-xl md:text-2xl lg:text-4xl mb-5">
             Our Student <span className="text-pink-500">Says</span>
           </h2>
         </div>
