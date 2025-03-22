@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Image from "next/image";
@@ -90,17 +91,16 @@ const HomeComponent = () => {
         setTutors(allTutor);
         console.log("testData: ", usersData);
         if (user) {
-          const [reviewData, bookingsData] = await Promise.all([
-            getAllReviewComments(),
-            getAllBooking(),
-          ]);
+          const reviewData = await getAllReviewComments();
+          const bookingsData = await getAllBooking();
+
           setReviews(reviewData?.data);
           setUsers(usersData?.data);
 
           if (bookingsData?.data) {
-            const tutorIdList = bookingsData?.data?.map(
-              (item: any) => item.tutor
-            );
+            const tutorIdList = bookingsData?.data
+              ?.filter((item: any) => item.student === currentUser?._id)
+              .map((item: any) => item.tutor);
             setRequestedTutors(tutorIdList);
 
             //filter out the checking accepted request
@@ -144,11 +144,7 @@ const HomeComponent = () => {
       console.log(error);
     }
   };
-  console.log("tutors: ", tutors);
-  const tutorids = tutors?.find((item) => item._id);
-  console.log("tutorids", tutorids);
-  // {tutors?.slice(0, 8).map((tutor, index) => (
-  // console.log("requestedTutors: ", requestedTutors);
+
   return (
     <div>
       {/* =============================Banner section=========================== */}
@@ -447,14 +443,14 @@ const HomeComponent = () => {
                     <div>
                       {acceptedTutors?.includes(tutor?._id) ? (
                         <Button
-                          onClick={() => handleRequest(tutor?._id)}
+                          // onClick={() => handleRequest(tutor?._id)}
                           className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
                         >
                           Accpted
                         </Button>
                       ) : requestedTutors?.includes(tutor?._id) ? (
                         <Button
-                          onClick={() => handleRequest(tutor?._id)}
+                          // onClick={() => handleRequest(tutor?._id)}
                           className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
                         >
                           Request

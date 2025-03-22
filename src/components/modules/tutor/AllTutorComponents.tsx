@@ -32,7 +32,7 @@ const AllTutorComponents = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(tutors);
+
   console.log(error);
   console.log(loading);
 

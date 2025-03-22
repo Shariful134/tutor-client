@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -106,7 +107,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   }, [time, calculatedPrice, tutor, form]);
 
   const currentBookingId = currentBookingStudent?._id ?? "";
-  console.log("currentBookingStudent: ", currentBookingStudent);
+  // console.log("currentBookingStudent: ", currentBookingStudent);
   const onSubmit = async (data: FieldValues) => {
     const orderData = {
       ...data,
