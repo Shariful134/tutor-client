@@ -22,6 +22,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getAllUsers } from "@/services/User";
 import { IUsers } from "@/types";
+import Loading from "./Loading";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -67,7 +68,7 @@ export default function Navbar() {
     }
   };
   if (isLoading) {
-    return <p>loading....</p>;
+    return <Loading />;
   }
 
   return (

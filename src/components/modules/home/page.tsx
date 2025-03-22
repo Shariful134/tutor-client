@@ -70,10 +70,11 @@ import {
 } from "@/services/request";
 import { toast } from "sonner";
 import { TBooking } from "@/types/bookings";
+import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
-  const [users, setUsers] = useState<ITutor[] | []>([]);
+
   const [isUser, setIsUser] = useState<ITutor[] | []>([]);
   const [reviews, setReviews] = useState<IReview[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -81,21 +82,20 @@ const HomeComponent = () => {
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
   const { user } = useUser();
-  console.log("user1: ", user);
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
+
         const usersData = await getAllUsers();
-        setUsers(usersData?.data);
-        //currentUser find
-        if (user) {
-          const loggedUser = usersData?.data?.filter(
-            (item: ITutor) => item.email === user?.userEmail
-          );
-          setIsUser(loggedUser);
-        }
+
+        const loggedUser = usersData?.data?.filter(
+          (item: ITutor) => item.email === user?.userEmail
+        );
+
+        setIsUser(loggedUser);
+        console.log("loggedUser: ", loggedUser, isUser);
 
         const allTutor = usersData?.data?.filter(
           (item: ITutor) => item.role === "tutor"
@@ -105,19 +105,17 @@ const HomeComponent = () => {
         if (user) {
           const bookingsData = await getAllBooking();
 
-          if (user && bookingsData?.data) {
-            const tutorIdList = bookingsData?.data
-              ?.filter((item: any) => item.student?._id === isUser[0]?._id)
-              .map((item: any) => item.tutor);
-            setRequestedTutors(tutorIdList);
+          const tutorIdList = bookingsData?.data
+            ?.filter((item: any) => item.student?._id === loggedUser[0]?._id)
+            .map((item: any) => item.tutor);
+          setRequestedTutors(tutorIdList);
 
-            // filter out the checking accepted request
-            const acceptedTutorId = bookingsData?.data
-              ?.filter((item: any) => item.bookingRequest === true)
-              .map((item: any) => item.tutor);
-            setAccetedTutors(acceptedTutorId);
-            setLoading(false);
-          }
+          // filter out the checking accepted request
+          const acceptedTutorId = bookingsData?.data
+            ?.filter((item: any) => item.bookingRequest === true)
+            .map((item: any) => item.tutor);
+          setAccetedTutors(acceptedTutorId);
+          setLoading(false);
         }
 
         setLoading(false);
@@ -128,12 +126,6 @@ const HomeComponent = () => {
     };
     fetchTutors();
   }, [user]);
-
-  console.log("currentUser: ", isUser[0]?._id);
-  // console.log("tutors: ", tutors);
-  // console.log("acceptedTutors: ", acceptedTutors);
-  console.log("requestedTutors: ", requestedTutors);
-  // console.log("allBookings: ", );
 
   //handle Booking Request
   const handleRequest = async (id: string) => {
@@ -156,6 +148,13 @@ const HomeComponent = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="pt-20 flex justify-center">
+        <SkeletonLoading />
+      </div>
+    );
+  }
   return (
     <div>
       {/* =============================Banner section=========================== */}

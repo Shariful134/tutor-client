@@ -13,6 +13,7 @@ import { ITutor } from "../home/page";
 import { useUser } from "@/context/UserContext";
 import { getAllBooking, requestBooking } from "@/services/request";
 import { toast } from "sonner";
+import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 
 const TutorDetailsComponent = ({ id }: { id: string }) => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
@@ -116,6 +117,13 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="pt-20 flex justify-center">
+        <SkeletonLoading />
+      </div>
+    );
+  }
   return (
     <div className="pt-20 px-10 grid md:grid-cols-4 gap-5 ">
       <div className="col-span-3 ">
@@ -221,25 +229,14 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
                   height={100}
                   alt="profileImage"
                 ></Image>
-                <Link href={`/tutors/${tutor._id}`}>
-                  <button className=" absolute  top-1/2 left-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 roudend-md w-full btn btn-xs cursor-pointer hover:text-gray-900 border-0 bg-gray-300  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                    Details
-                  </button>
+                <Link
+                  className="absolute text-center py-1 top-1/2 left-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 roudend-md w-full text-xs cursor-pointer hover:text-gray-900 border-0 bg-gray-300  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                  href={`/tutors/${tutor._id}`}
+                >
+                  Details
                 </Link>
               </figure>
-              {/* <figure className="relative group">
-                <Image
-                  src={tutor.profileImage}
-                  width={400}
-                  height={100}
-                  alt="profileImage"
-                ></Image>
-                <Link href={`/tutors/${tutor._id}`}>
-                  <button className=" absolute  top-1/2 left-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 roudend-md w-full btn btn-xs cursor-pointer hover:text-gray-900 border-0 bg-gray-300  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                    Details
-                  </button>
-                </Link>
-              </figure> */}
+
               <div className="py-2">
                 <div className="card-actions flex-col justify-center items-center">
                   <h2 className="card-title text-center text-xs">
