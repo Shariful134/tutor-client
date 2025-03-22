@@ -20,7 +20,6 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
   const [specificTutors, setSpecificTutors] = useState<ITutor[] | []>([]);
   const [tutor, setTutor] = useState<ITutor[] | []>([]);
   const [student, setStudent] = useState<ITutor[] | []>([]);
-
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -94,9 +93,8 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
     (item) => item.category === tutor[0]?.category
   );
 
-  // console.log("reletedTutor: ", reletedTutor);
-  // console.log("tutors: ", tutors);
-  //handle Booking Request
+  console.log(reletedTutor);
+
   const handleRequest = async (id: string) => {
     const requestData = {
       student: student[0]?._id,
@@ -125,99 +123,102 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
     );
   }
   return (
-    <div className="pt-20 px-10 grid md:grid-cols-4 gap-5 ">
-      <div className="col-span-3 ">
-        {tutor?.map((tutorData: ITutor) => (
-          <div
-            key={tutorData?._id}
-            className=" p-5 card bg-base-100 mx-auto min-w-[70%]  h-full flex flex-col md:flex-row justify-center items-center shadow-md"
-          >
-            <div className="flex flex-col justify-center items-center">
-              <Image
-                src={tutorData?.profileImage ?? "/default-profile.png"}
-                width={200}
-                height={200}
-                alt={tutorData?.name ?? "Tutor"}
-                className="rounded-md"
-              ></Image>
-              <span className="text-sm">{tutorData?.email}</span>
-              <div className="flex gap-1 text-sm md:text-sm lg:text-lg justify-center text-gray-700">
-                <FaStar className="text-yellow-500" />
-                <FaStar className="text-yellow-500" />
-                <FaStarHalfAlt className="text-yellow-500" />
-                <FaRegStar className="text-yellow-500" />
+    <>
+      <div className="pt-20 px-10 ">
+        <div className="">
+          {tutor?.map((tutorData: ITutor) => (
+            <div
+              key={tutorData?._id}
+              className=" p-5 card bg-base-100 mx-auto min-w-[70%]  h-full flex flex-col md:flex-row justify-center items-center shadow-md"
+            >
+              <div className="flex flex-col justify-center items-center">
+                <Image
+                  src={tutorData?.profileImage ?? "/default-profile.png"}
+                  width={200}
+                  height={200}
+                  alt={tutorData?.name ?? "Tutor"}
+                  className="rounded-md"
+                ></Image>
+                <span className="text-sm">{tutorData?.email}</span>
+                <div className="flex gap-1 text-sm md:text-sm lg:text-lg justify-center text-gray-700">
+                  <FaStar className="text-yellow-500" />
+                  <FaStar className="text-yellow-500" />
+                  <FaStarHalfAlt className="text-yellow-500" />
+                  <FaRegStar className="text-yellow-500" />
+                </div>
               </div>
-            </div>
-            <div className="card-body">
-              <div className="flex justify-center items-center">
-                <h2 className="card-title text-xl ">{tutorData?.name} </h2>
-                <p className=" text-sm md:text-sm  text-gray-700 ">
-                  ( {tutorData?.gradeLevel})
+              <div className="card-body">
+                <div className="flex justify-center items-center">
+                  <h2 className="card-title text-xl ">{tutorData?.name} </h2>
+                  <p className=" text-sm md:text-sm  text-gray-700 ">
+                    ( {tutorData?.gradeLevel})
+                  </p>
+                </div>
+                <p className=" text-sm md:text-sm font-semibold lg:text-lg text-gray-700 ">
+                  {tutorData?.category}
                 </p>
-              </div>
-              <p className=" text-sm md:text-sm font-semibold lg:text-lg text-gray-700 ">
-                {tutorData?.category}
-              </p>
-              <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-                <span className="text-gray-900">Subject: </span>{" "}
-                {tutorData?.subjects?.join(", ")}
-              </p>
-              <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-                <span className="text-gray-900">HourlyRatelity:</span>{" "}
-                {tutorData?.hourlyRate} $
-              </p>
+                <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
+                  <span className="text-gray-900">Subject: </span>{" "}
+                  {tutorData?.subjects?.join(", ")}
+                </p>
+                <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
+                  <span className="text-gray-900">HourlyRatelity:</span>{" "}
+                  {tutorData?.hourlyRate} $
+                </p>
 
-              <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-                Phone: {tutorData?.phoneNumber}
-              </p>
+                <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
+                  Phone: {tutorData?.phoneNumber}
+                </p>
 
-              <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-                <span className="text-gray-900"> </span>{" "}
-                {tutorData?.availability
-                  ?.map(
-                    (avail: { day: string; time: string }) =>
-                      `${avail.day}: ${avail.time}`
-                  )
-                  .join(", ")}
-              </p>
-              <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
-                <span className="text-gray-900">Details: {tutorData?.bio}</span>{" "}
-              </p>
-              <div className=" flex flex-wrap gap-y-2 gap-x-2 justify-start  items-center">
-                {user?.role === "student" && (
-                  <div>
-                    {acceptedTutors?.includes(tutorData?._id) ? (
-                      <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                        Accpted
-                      </Button>
-                    ) : requestedTutors?.includes(tutorData?._id) ? (
-                      <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                        Request
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => handleRequest(tutorData?._id)}
-                        className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
-                      >
-                        Add
-                      </Button>
-                    )}
-                  </div>
-                )}
+                <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
+                  <span className="text-gray-900"> </span>{" "}
+                  {tutorData?.availability
+                    ?.map(
+                      (avail: { day: string; time: string }) =>
+                        `${avail.day}: ${avail.time}`
+                    )
+                    .join(", ")}
+                </p>
+                <p className=" text-sm md:text-sm lg:text-lg text-gray-700 ">
+                  <span className="text-gray-900">
+                    Details: {tutorData?.bio}
+                  </span>{" "}
+                </p>
+                <div className=" flex flex-wrap gap-y-2 gap-x-2 justify-start  items-center">
+                  {user?.role === "student" && (
+                    <div>
+                      {acceptedTutors?.includes(tutorData?._id) ? (
+                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                          Accpted
+                        </Button>
+                      ) : requestedTutors?.includes(tutorData?._id) ? (
+                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                          Request
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleRequest(tutorData?._id)}
+                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </div>
+                  )}
 
-                <Link href={`/booking/${tutorData?._id}`}>
-                  <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                    Booking
-                  </Button>
-                </Link>
+                  <Link href={`/booking/${tutorData?._id}`}>
+                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                      Booking
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="col-span-1  p-4 rounded-lg shadow-md">
-        <div className="flex flex-wrap justify-center gap-3 ">
-          {reletedTutor?.slice(0, 2).map((tutor) => (
+          ))}
+        </div>
+
+        <div className="flex flex-wrap justify-start mt-5  gap-3 ">
+          {reletedTutor?.map((tutor) => (
             <div
               key={tutor._id}
               className="card bg-base-100 w-[95%] min-w-[100px] max-w-[120px]  border border-gray-200 hover:shadow-sm"
@@ -258,7 +259,7 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

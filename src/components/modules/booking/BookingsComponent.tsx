@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { IUsers } from "@/types";
 import { confirmBooking, getAllBookings } from "@/services/request";
 import { TBooking } from "@/types/bookings";
+import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 
 const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [student, setStudent] = useState<IUsers[] | []>([]);
@@ -43,6 +44,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [time, setTime] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm({
     defaultValues: {
@@ -60,6 +62,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   useEffect(() => {
     const fetchTutors = async () => {
       try {
+        setLoading(true);
         const [tutorData, studentData, bookingsData] = await Promise.all([
           getAllTutors(),
           getAllStudent(),
@@ -82,6 +85,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
         if (bookingsData?.data) {
           setBookings(bookingsData?.data);
         }
+        setLoading(false);
       } catch (error: any) {
         console.log(error);
       }
@@ -133,6 +137,13 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="pt-20 flex justify-center">
+        <SkeletonLoading />
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col md:flex-row px-10 gap-5 justify-center">
       <div className="pt-5 p-5 shadow-2xl">
