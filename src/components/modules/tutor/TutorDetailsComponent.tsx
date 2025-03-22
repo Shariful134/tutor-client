@@ -28,63 +28,73 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
 
   // using UseEffect for the Data
   useEffect(() => {
-    setLoading(true);
+    const fetchData = async () => {
+      setLoading(true);
 
-    // api call for SingletutorData
-    const tutorDataFetch = async () => {
-      const tutor = await getSingleTutors(id);
-      const tutorDetails = [];
-      tutorDetails.push(tutor?.data);
-      setTutor(tutorDetails);
-      // setTutor(tutor?.data);
-      setLoading(false);
-    };
-    tutorDataFetch();
+      try {
+        // api call for SingletutorData
+        const tutor = await getSingleTutors(id);
+        setTutor([tutor?.data]);
 
-    // api call for allUsersData
-    const usersDataFetch = async () => {
-      const usersData = await getAllUsers();
-      const allTutorsData = usersData?.data.filter(
-        (tutor: any) => tutor.role === "tutor"
-      );
-      setTutors(allTutorsData);
+        // api call for AllUSersData
+        const usersData = await getAllUsers();
+        const allTutorsData = usersData?.data.filter(
+          (tutor: any) => tutor.role === "tutor"
+        );
+        setTutors(allTutorsData);
 
-      const currentStudent = usersData?.data.filter(
-        (student: any) => student.email === user?.userEmail
-      );
-      setStudent(currentStudent);
-      setLoading(false);
-    };
-    // api call AllBooking
-    const allBookingDataFetch = async () => {
-      const bookingsData = await getAllBooking();
-      if (bookingsData?.data) {
-        const tutorIdList = bookingsData?.data
-          ?.filter((item: any) => item.student === student[0]?._id)
-          .map((item: any) => item.tutor);
-        setRequestedTutors(tutorIdList);
+        // current setStudentData
+        let currentStudent = [];
+        if (user) {
+          currentStudent = usersData?.data.filter(
+            (student: any) => student.email === user?.userEmail
+          );
+          setStudent(currentStudent);
+        }
 
-        //filter out the checking accepted request
-        const acceptedTutorId = bookingsData?.data
-          ?.filter((item: any) => item.bookingRequest === true)
-          .map((item: any) => item.tutor);
-        setAccetedTutors(acceptedTutorId);
+        if (user && currentStudent.length > 0) {
+          const bookingsData = await getAllBooking();
+          setSpecificTutors(bookingsData?.data);
+          if (bookingsData?.data) {
+            const tutorIdList = bookingsData?.data
+              ?.filter(
+                (item: any) =>
+                  item.student?._id === currentStudent[0]?._id &&
+                  item.tutor === id
+              )
+              .map((item: any) => item.tutor);
+            setRequestedTutors(tutorIdList);
+
+            //filter out the checking accepted request
+            const acceptedTutorId = bookingsData?.data
+              ?.filter((item: any) => item.bookingRequest === true)
+              .map((item: any) => item.tutor);
+            setAccetedTutors(acceptedTutorId);
+            setLoading(false);
+          }
+        }
+      } catch (error) {
+        console.log(error);
         setLoading(false);
       }
-      setLoading(false);
     };
-    allBookingDataFetch();
-    tutorDataFetch();
-    usersDataFetch();
-  }, []);
+
+    fetchData();
+  }, [id, user]);
+
+  const tBook = specificTutors
+    ?.filter(
+      (item: any) => item.student?._id === student[0]?._id && item.tutor === id
+    )
+    .map((item: any) => item.tutor);
 
   //set releted tutor of category
   const reletedTutor = tutors?.filter(
     (item) => item.category === tutor[0]?.category
   );
 
-  console.log("reletedTutor: ", reletedTutor);
-  console.log("tutors: ", tutors);
+  // console.log("reletedTutor: ", reletedTutor);
+  // console.log("tutors: ", tutors);
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {
@@ -217,7 +227,19 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
                   </button>
                 </Link>
               </figure>
-
+              {/* <figure className="relative group">
+                <Image
+                  src={tutor.profileImage}
+                  width={400}
+                  height={100}
+                  alt="profileImage"
+                ></Image>
+                <Link href={`/tutors/${tutor._id}`}>
+                  <button className=" absolute  top-1/2 left-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 roudend-md w-full btn btn-xs cursor-pointer hover:text-gray-900 border-0 bg-gray-300  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                    Details
+                  </button>
+                </Link>
+              </figure> */}
               <div className="py-2">
                 <div className="card-actions flex-col justify-center items-center">
                   <h2 className="card-title text-center text-xs">
@@ -237,11 +259,6 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
               </div>
             </div>
           ))}
-        </div>
-        <div className="text-center mt-2">
-          <button className="roudend-md btn btn-xs cursor-pointer hover:text-gray-900 border-0 bg-gray-300  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-            Details
-          </button>
         </div>
       </div>
     </div>

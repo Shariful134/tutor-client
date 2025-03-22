@@ -69,41 +69,49 @@ import {
   requestBooking,
 } from "@/services/request";
 import { toast } from "sonner";
+import { TBooking } from "@/types/bookings";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
   const [users, setUsers] = useState<ITutor[] | []>([]);
+  const [isUser, setIsUser] = useState<ITutor[] | []>([]);
   const [reviews, setReviews] = useState<IReview[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
   const { user } = useUser();
+  console.log("user1: ", user);
 
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
         const usersData = await getAllUsers();
+        setUsers(usersData?.data);
+        //currentUser find
+        if (user) {
+          const loggedUser = usersData?.data?.filter(
+            (item: ITutor) => item.email === user?.userEmail
+          );
+          setIsUser(loggedUser);
+        }
+
         const allTutor = usersData?.data?.filter(
           (item: ITutor) => item.role === "tutor"
         );
         setTutors(allTutor);
-        console.log("testData: ", usersData);
+
         if (user) {
-          const reviewData = await getAllReviewComments();
           const bookingsData = await getAllBooking();
 
-          setReviews(reviewData?.data);
-          setUsers(usersData?.data);
-
-          if (bookingsData?.data) {
+          if (user && bookingsData?.data) {
             const tutorIdList = bookingsData?.data
-              ?.filter((item: any) => item.student === currentUser?._id)
+              ?.filter((item: any) => item.student?._id === isUser[0]?._id)
               .map((item: any) => item.tutor);
             setRequestedTutors(tutorIdList);
 
-            //filter out the checking accepted request
+            // filter out the checking accepted request
             const acceptedTutorId = bookingsData?.data
               ?.filter((item: any) => item.bookingRequest === true)
               .map((item: any) => item.tutor);
@@ -119,15 +127,18 @@ const HomeComponent = () => {
       }
     };
     fetchTutors();
-  }, []);
+  }, [user]);
 
-  const currentUser = users?.find((item) => item.email === user?.userEmail);
-  // console.log(acceptedTutors);
+  console.log("currentUser: ", isUser[0]?._id);
+  // console.log("tutors: ", tutors);
+  // console.log("acceptedTutors: ", acceptedTutors);
+  console.log("requestedTutors: ", requestedTutors);
+  // console.log("allBookings: ", );
 
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {
-      student: currentUser?._id,
+      student: isUser[0]?._id,
       tutor: id,
     };
 

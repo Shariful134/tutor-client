@@ -1,9 +1,11 @@
 import TutorDetailsComponent from "@/components/modules/tutor/TutorDetailsComponent";
-interface TutorDetailsProps {
-  params: { tutorId: string };
-}
-const TutorDetails = async ({ params }: TutorDetailsProps) => {
-  const { tutorId } = params;
+
+const TutorDetails = async ({
+  params,
+}: {
+  params: Promise<{ tutorId: string }>;
+}) => {
+  const { tutorId } = await params;
 
   return (
     <div>
