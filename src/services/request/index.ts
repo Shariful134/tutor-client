@@ -96,6 +96,30 @@ export const confirmBooking = async (orderData: FieldValues, id: string) => {
   }
 };
 
+// verify payment
+export const verifyPayment = async (order_id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/verify?order_id=${order_id}`,
+
+      {
+        next: {
+          tags: ["bookings"],
+        },
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
 // getAll Bookings
 export const getAllBooking = async () => {
   const token = (await cookies()).get("accessToken")!.value;

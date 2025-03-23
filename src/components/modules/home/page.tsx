@@ -139,7 +139,7 @@ const HomeComponent = () => {
 
       if (res.success) {
         toast.success(res.message);
-        setRequestedTutors((prev) => [...prev, id]);
+        setRequestedTutors((prev) => [...(prev || []), id]);
       } else {
         toast.success(res.message);
       }
@@ -161,7 +161,7 @@ const HomeComponent = () => {
       <div className="flex flex-col md:flex-row px-5 md:px-10 items-center pt-20">
         <div className="pt-5 text-center md:text-start">
           <h2 className="text-2xl md:text-3xl lg:text-5xl  ">
-            Learn Better, <span className="text-pink-500">Achieve More!</span>
+            Learn Better, <span className="text-pink-500">AcademyNest !</span>
           </h2>
           <p className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4">
             Looking for the best tutors? TutorLink 🎓 connects students with

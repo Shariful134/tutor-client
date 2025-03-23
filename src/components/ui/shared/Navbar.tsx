@@ -73,14 +73,9 @@ export default function Navbar() {
 
   return (
     <header className="border-b bg-gray-200 border-gray-300 w-full fixed z-1">
-      <div className="container flex justify-between  items-center h-16 px-10 mx-auto">
+      <div className="container flex justify-between  items-center h-18 px-10 mx-auto">
         <h1 className="text-2xl font-black flex items-center">
-          <Image
-            src={tutorlin}
-            width={100}
-            height={100}
-            alt="tutorlink"
-          ></Image>
+          <Image src={tutorlin} width={60} height={60} alt="tutorlink"></Image>
         </h1>
 
         <nav className="flex gap-4 items-center">

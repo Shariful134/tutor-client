@@ -32,6 +32,7 @@ import { IUsers } from "@/types";
 import { confirmBooking, getAllBookings } from "@/services/request";
 import { TBooking } from "@/types/bookings";
 import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
+import { useRouter } from "next/router";
 
 const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [student, setStudent] = useState<IUsers[] | []>([]);
@@ -45,6 +46,8 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -127,7 +130,9 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
 
       if (res?.success) {
         toast.success(res?.message, { id: toastId });
+        window.location.href = res?.data?.checkout_url;
         console.log(res);
+        console.log("url: ", res?.data?.checkout_url);
       } else {
         toast.error(res?.message, { id: toastId });
       }
