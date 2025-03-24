@@ -36,14 +36,22 @@ export type Tutor = {
   profileImage: string;
 };
 
-export type BookingStatus = "Pending" | "Confirmed" | "Cancelled";
+export type BookingStatus = "Pending" | "Paid" | "Cancelled";
 
 export type TBooking = {
   _id: string;
   student: Student;
   tutor: Tutor;
+  address?: string;
+  dateTime?: string;
+  subjects: [];
+  action: string;
+  duration?: string;
   bookingRequest: boolean;
   status: BookingStatus;
+  phone: string;
+  totalPrice: string;
+
   createdAt: string;
   updatedAt: string;
   __v: number;

@@ -17,7 +17,6 @@ import {
 
 const BookingRequest = () => {
   const { user, setIsLoading } = useUser();
-  //   const [tutorId, setTutorId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
   const [users, setUsers] = useState<ITutor[] | []>([]);
 
@@ -62,7 +61,7 @@ const BookingRequest = () => {
     await getbooking();
   };
   //show this data your Table
-  console.log("BookingTutor :", BookingTutor);
+  // console.log("BookingTutor :", BookingTutor);
 
   const columns: ColumnDef<any>[] = [
     {
@@ -108,7 +107,7 @@ const BookingRequest = () => {
           <div className="flex items-center  space-x-3">
             {row.original.bookingRequest ? (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
-                Accept
+                Accepted
               </p>
             ) : (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
@@ -129,7 +128,7 @@ const BookingRequest = () => {
               onClick={() => handleBookingRequest(row?.original?._id)}
               className="btn text-green-500 bg-green-300/25 font-normal px-2 py-1 h-6 border-0 rounded"
             >
-              Accept
+              Accepted
             </button>
 
             <button
@@ -138,15 +137,6 @@ const BookingRequest = () => {
             >
               Cancel
             </button>
-
-            {/* <button
-              onClick={() => handleDelete(row.original)}
-              className="text-red-500"
-              title="Delete"
-            >
-              {" "}
-              <Trash className="w-5 h-5" />
-            </button> */}
           </div>
         );
       },
@@ -159,14 +149,6 @@ const BookingRequest = () => {
         <div className="pt-5">
           <NMTable columns={columns} data={BookingTutor || []}></NMTable>
         </div>
-        {/* <div>
-          <DeleteConfirmationModal
-            name={selectedItem}
-            isOpen={isModalOpen}
-            onOpenChange={setModalOpen}
-            onConfirm={handleDeleteConfirm}
-          />
-        </div> */}
       </div>
     </div>
   );

@@ -130,9 +130,9 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
 
       if (res?.success) {
         toast.success(res?.message, { id: toastId });
-        window.location.href = res?.data?.checkout_url;
-        console.log(res);
-        console.log("url: ", res?.data?.checkout_url);
+        setTimeout(() => {
+          window.location.href = res?.data?.checkout_url;
+        }, 3000);
       } else {
         toast.error(res?.message, { id: toastId });
       }

@@ -10,6 +10,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
+body {
+  overflow-x: hidden;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

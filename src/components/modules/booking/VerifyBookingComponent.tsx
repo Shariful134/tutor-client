@@ -10,11 +10,13 @@ import { useReactToPrint } from "react-to-print";
 import logo from "../../../app/assest/images/tutorlin-logo.png";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/ui/shared/Loading";
 
 const VerifyBookingComponent = () => {
   const searchParams = useSearchParams();
   const order_id = searchParams.get("order_id") as string;
   const [bookingData, setBookingData] = useState<PaymentVerificationArray>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
@@ -25,8 +27,10 @@ const VerifyBookingComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const verifyData = await verifyPayment(order_id);
         setBookingData(verifyData?.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -34,6 +38,13 @@ const VerifyBookingComponent = () => {
     fetchData();
   }, [order_id]);
 
+  if (isLoading) {
+    return (
+      <div className="pt-20 flex justify-center">
+        <Loading />
+      </div>
+    );
+  }
   return (
     <div className="px-10 ">
       <div

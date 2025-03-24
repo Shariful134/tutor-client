@@ -32,7 +32,7 @@ export function NMTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md overflow-x-auto">
+    <div className="rounded-md ">
       <Table className="min-w-[1100px]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -411,7 +411,7 @@ const HomeComponent = () => {
               key={tutor._id || index}
               className="card bg-base-100 w-[95%]  border border-gray-200 hover:shadow-lg"
             >
-              <figure>
+              <figure className="relative group">
                 <Image
                   src={tutor?.profileImage}
                   priority={true}
@@ -419,6 +419,12 @@ const HomeComponent = () => {
                   height={650}
                   alt="BannerImg"
                 ></Image>
+                <Link
+                  className="roudend-ful w-full absolute text-center py-1 top-1/2 left-0 -translate-y-1/2 opacity-0 group-hover:opacity-100 cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+                  href={`/tutors/${tutor._id}`}
+                >
+                  Details
+                </Link>
               </figure>
               <div className="card-body">
                 <h2 className="card-title text-xl">{tutor.name}</h2>
@@ -443,12 +449,6 @@ const HomeComponent = () => {
                   </div>
                 </div>
                 <div className=" flex flex-wrap gap-y-2 justify-between  items-center">
-                  <Link href={`/tutors/${tutor._id}`}>
-                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                      Details
-                    </Button>
-                  </Link>
-
                   {user?.role === "student" && (
                     <div>
                       {acceptedTutors?.includes(tutor?._id) ? (

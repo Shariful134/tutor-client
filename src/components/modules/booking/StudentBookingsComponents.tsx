@@ -68,7 +68,9 @@ const StudentBookingsComponents = () => {
 
         return (
           <div className="flex items-center space-x-3">
-            <div className="text-right font-medium ">{subjects.join(", ")}</div>
+            <div className="text-right font-medium ">
+              {subjects?.join(", ")}
+            </div>
           </div>
         );
       },
@@ -109,11 +111,11 @@ const StudentBookingsComponents = () => {
           <div className="flex items-center  space-x-3">
             {row.original.bookingRequest ? (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
-                Accept
+                Accepted
               </p>
             ) : (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
-                Request
+                Requested
               </p>
             )}
           </div>
