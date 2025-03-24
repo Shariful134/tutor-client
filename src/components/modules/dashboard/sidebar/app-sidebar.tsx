@@ -60,25 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 },
               ],
       },
-      // {
-      //   title: "My Bookings",
-      //   url: "/user/shop/products",
-      //   icon: Bot,
-      //   items: [
-      //     {
-      //       title: "Manage Products",
-      //       url: "/user/shop/products",
-      //     },
-      //     {
-      //       title: "Manage Categories",
-      //       url: "/user/shop/category",
-      //     },
-      //     {
-      //       title: "Manage Brands",
-      //       url: "/user/shop/brand",
-      //     },
-      //   ],
-      // },
+
       {
         title: "Shop",
         url: "/user/shop/products",
