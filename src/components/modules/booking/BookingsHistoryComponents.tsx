@@ -29,6 +29,8 @@ const BookingsHistoryComponents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
 
+  const [reFetch, setReFectch] = useState<boolean>(false);
+
   const [loggedId, setLoggedId] = useState<string | "">("");
 
   const { user } = useUser();
@@ -58,6 +60,7 @@ const BookingsHistoryComponents = () => {
         );
         setBookings(currentBookings);
         setLoading(false);
+        setReFectch(false);
       } catch (error) {
         console.log(error);
       }
@@ -66,7 +69,7 @@ const BookingsHistoryComponents = () => {
     if (email) {
       fetchData();
     }
-  }, [email]);
+  }, [email, reFetch]);
 
   // if (loading) {
   //   return <Loading></Loading>;
@@ -273,6 +276,7 @@ const BookingsHistoryComponents = () => {
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-6">
                               <BookingUpdateComponent
+                                setReFectch={setReFectch}
                                 id={booking._id}
                               ></BookingUpdateComponent>
                               <button

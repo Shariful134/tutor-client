@@ -32,7 +32,6 @@ import { IUsers } from "@/types";
 import { confirmBooking, getAllBookings } from "@/services/request";
 import { TBooking } from "@/types/bookings";
 import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
-import { useRouter } from "next/router";
 
 const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [student, setStudent] = useState<IUsers[] | []>([]);
@@ -222,7 +221,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
                       >
                         <Calendar
                           mode="single"
-                          selected={field.value}
+                          // selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) =>
                             date > new Date() || date < new Date("1900-01-01")

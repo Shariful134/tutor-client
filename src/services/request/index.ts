@@ -114,7 +114,7 @@ export const updateBooking = async (updateData: FieldValues, id: string) => {
       }
     );
     const result = await res.json();
-    revalidateTag("bookings");
+    revalidateTag("test");
     return result;
   } catch (error: any) {
     return Error(error);
@@ -205,7 +205,7 @@ export const getAllBookings = async () => {
 
       {
         next: {
-          tags: ["bookings"],
+          tags: ["bookings", "test"],
         },
         method: "GET",
         headers: {

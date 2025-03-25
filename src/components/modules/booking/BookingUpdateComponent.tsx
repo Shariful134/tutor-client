@@ -20,14 +20,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { getSingleBooking, updateBooking } from "@/services/request";
 import { TBooking } from "@/types/bookings";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export function BookingUpdateComponent({ id }: { id: string }) {
+export function BookingUpdateComponent({
+  id,
+  setReFectch,
+}: {
+  id: string;
+  setReFectch: Dispatch<SetStateAction<boolean>>;
+}) {
   const [bookingData, setBookingData] = useState<TBooking | undefined>(
     undefined
   );
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [time, setTime] = useState(0);
   const form = useForm({
     defaultValues: {
@@ -48,14 +56,7 @@ export function BookingUpdateComponent({ id }: { id: string }) {
     };
     fetchData();
   }, []);
-  // const form = useForm({
-  //   defaultValues: {
-  //     address: "",
-  //     phone: "",
-  //     duration: 0,
-  //     totalPrice: 0,
-  //   },
-  // });
+
   const {
     formState: { isSubmitting },
   } = form;
@@ -80,6 +81,8 @@ export function BookingUpdateComponent({ id }: { id: string }) {
       const res = await updateBooking(data, id);
       if (res?.success) {
         toast?.success(res?.message);
+        setReFectch(true);
+        setOpenModal(false);
       } else {
         toast.error(res?.message);
       }
@@ -90,7 +93,7 @@ export function BookingUpdateComponent({ id }: { id: string }) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <button className=" transition-colors cursor-pointer btn btn-sm duration-200  inline-flex items-center px-3 py-1 border-0  rounded-md gap-x-2 text-emerald-500  bg-emerald-100/60 dark:bg-gray-800 focus:outline-none">
           Update
