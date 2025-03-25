@@ -51,7 +51,7 @@ export type TBooking = {
   status: BookingStatus;
   phone: string;
   totalPrice: string;
-
+  transaction?: { id?: string };
   createdAt: string;
   updatedAt: string;
   __v: number;

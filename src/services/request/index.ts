@@ -89,8 +89,33 @@ export const confirmBooking = async (orderData: FieldValues, id: string) => {
         body: JSON.stringify(orderData),
       }
     );
+    const result = await res.json();
+    revalidateTag("bookings");
+    return result;
+  } catch (error: any) {
+    return Error(error);
+  }
+};
 
-    return res.json();
+// Update booking
+export const updateBooking = async (updateData: FieldValues, id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/update/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(updateData),
+      }
+    );
+    const result = await res.json();
+    revalidateTag("bookings");
+    return result;
   } catch (error: any) {
     return Error(error);
   }
@@ -127,6 +152,31 @@ export const getAllBooking = async () => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/get`,
+
+      {
+        next: {
+          tags: ["bookings"],
+        },
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+
+    return res.json();
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+
+// get Single Bookings
+export const getSingleBooking = async (id: string) => {
+  const token = (await cookies()).get("accessToken")!.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/get/${id}`,
 
       {
         next: {

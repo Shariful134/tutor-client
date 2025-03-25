@@ -19,7 +19,9 @@ import { useEffect, useState } from "react";
 //   TableHeader,
 //   TableRow,
 // } from "@/components/ui/table";
-import { getAllBookings } from "@/services/request";
+import { cancelBooking, getAllBookings } from "@/services/request";
+import { toast } from "sonner";
+import { BookingUpdateComponent } from "./BookingUpdateComponent";
 
 // export type BookingStatus = "Pending" | "Paid" | "Cancelled";
 
@@ -27,9 +29,11 @@ const BookingsHistoryComponents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
 
+  const [loggedId, setLoggedId] = useState<string | "">("");
+
   const { user } = useUser();
   const email = user?.userEmail;
-  console.log(email);
+  // console.log(email);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,9 +45,11 @@ const BookingsHistoryComponents = () => {
         const loggedUser = allUsers.data.find(
           (user: IUsers) => user.email === email
         );
+        if (loggedUser) {
+          setLoggedId(loggedUser?._id);
+        }
 
         //get Booking
-
         const allbookings = await getAllBookings();
         const currentBookings = allbookings?.data?.filter(
           (booking: TBooking) =>
@@ -75,20 +81,41 @@ const BookingsHistoryComponents = () => {
   const invoices = bookings?.map((booking: TBooking) => ({
     name: booking.student?.name,
     tutorName: booking.tutor?.name,
+    transactionID: booking?.transaction?.id,
+    status: booking.status,
     tutor: booking.tutor?._id,
     address: booking.address,
     subjects: booking.tutor?.subjects,
     dateTime: booking.dateTime,
     duration: booking.duration,
     phone: booking.phone,
-    status: booking.status,
     totalPrice: booking.totalPrice,
     action: "",
-    _id: "67dfe4c69f02fdfa142aa12e",
+    _id: booking._id,
   }));
-  console.log("invoices1: ", bookings);
-  console.log("invoices: ", invoices);
+  // console.log("invoices1: ", bookings);
 
+  const handleBookingCancel = async (id: string) => {
+    console.log(id);
+    try {
+      const res = await cancelBooking(id);
+      if (res.success) {
+        toast.success(res?.message);
+
+        //get Booking
+        const allbookings = await getAllBookings();
+        const currentBookings = allbookings?.data?.filter(
+          (booking: TBooking) =>
+            booking.student?._id === loggedId && booking.status === "Paid"
+        );
+        setBookings(currentBookings);
+      } else {
+        toast.error(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="pt-5">
       <h2>BookingHistory</h2>
@@ -128,6 +155,18 @@ const BookingsHistoryComponents = () => {
                           className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                         >
                           TutorName
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                        >
+                          TransactionID
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                        >
+                          Status
                         </th>
 
                         <th
@@ -177,7 +216,7 @@ const BookingsHistoryComponents = () => {
                             {booking.address}
                           </td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                            <div className="inline-flex items-center  py-1 rounded-full gap-x-2 dark:bg-gray-800">
                               <h2 className="text-sm font-normal">
                                 {" "}
                                 {booking.phone}
@@ -185,15 +224,28 @@ const BookingsHistoryComponents = () => {
                             </div>
                           </td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                            <div className="inline-flex items-center  py-1 rounded-full gap-x-2 dark:bg-gray-800">
+                              {booking.tutorName}
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                            <div className="inline-flex items-center  py-1 rounded-full gap-x-2 dark:bg-gray-800">
                               <h2 className="text-sm font-normal">
                                 {" "}
-                                {booking.tutorName}
+                                {booking?.transactionID}
                               </h2>
                             </div>
                           </td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                            <div className="inline-flex items-center py-1 rounded-full gap-x-2 dark:bg-gray-800">
+                              <h2 className="text-sm font-normal">
+                                {" "}
+                                {booking?.status}
+                              </h2>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                            <div className="inline-flex items-center py-1 rounded-full gap-x-2 dark:bg-gray-800">
                               <h2 className="text-sm font-normal">
                                 {Array.isArray(booking?.subjects)
                                   ? booking.subjects.join(", ")
@@ -202,7 +254,7 @@ const BookingsHistoryComponents = () => {
                             </div>
                           </td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+                            <div className="inline-flex items-center  py-1 rounded-full gap-x-2 dark:bg-gray-800">
                               <h2 className="text-sm font-normal">
                                 {booking.dateTime}
                               </h2>
@@ -211,7 +263,7 @@ const BookingsHistoryComponents = () => {
                           <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                             <div className="flex items-center gap-x-2">
                               <p className="text-xs font-normal text-gray-600 dark:text-gray-400">
-                                {booking.duration}
+                                {booking.duration} <sub>hr</sub>
                               </p>
                             </div>
                           </td>
@@ -220,10 +272,13 @@ const BookingsHistoryComponents = () => {
                           </td>
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
                             <div className="flex items-center gap-x-6">
-                              <button className="text-gray-500 transition-colors duration-200 dark:hover:text-indigo-500 dark:text-gray-300 hover:text-indigo-500 focus:outline-none">
-                                Update
-                              </button>
-                              <button className="text-blue-500 transition-colors duration-200 hover:text-indigo-500 focus:outline-none">
+                              <BookingUpdateComponent
+                                id={booking._id}
+                              ></BookingUpdateComponent>
+                              <button
+                                onClick={() => handleBookingCancel(booking._id)}
+                                className=" transition-colors cursor-pointer btn btn-sm duration-200  inline-flex items-center px-3 py-1 border-0  rounded-md gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800 focus:outline-none"
+                              >
                                 Cancel
                               </button>
                             </div>

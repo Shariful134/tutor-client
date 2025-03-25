@@ -47,8 +47,6 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const router = useRouter();
-
   const form = useForm({
     defaultValues: {
       address: "",

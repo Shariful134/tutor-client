@@ -60,8 +60,6 @@ const BookingRequest = () => {
     await cancelBooking(id);
     await getbooking();
   };
-  //show this data your Table
-  // console.log("BookingTutor :", BookingTutor);
 
   const columns: ColumnDef<any>[] = [
     {

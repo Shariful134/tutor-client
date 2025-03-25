@@ -409,9 +409,9 @@ const HomeComponent = () => {
           {tutors?.slice(0, 8).map((tutor, index) => (
             <div
               key={tutor._id || index}
-              className="card bg-base-100 w-[95%]  border border-gray-200 hover:shadow-lg"
+              className="card bg-base-100 w-[95%] group border border-gray-200 hover:shadow-lg"
             >
-              <figure className="relative group">
+              <figure className="relative ">
                 <Image
                   src={tutor?.profileImage}
                   priority={true}

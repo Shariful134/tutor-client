@@ -77,6 +77,7 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
         console.log(error);
         setLoading(false);
       }
+      setLoading(false);
     };
 
     fetchData();
@@ -221,9 +222,9 @@ const TutorDetailsComponent = ({ id }: { id: string }) => {
           {reletedTutor?.map((tutor) => (
             <div
               key={tutor._id}
-              className="card bg-base-100 w-[95%] min-w-[100px] max-w-[120px]  border border-gray-200 hover:shadow-sm"
+              className="card bg-base-100 w-[95%] group min-w-[100px] max-w-[120px]  border border-gray-200 hover:shadow-sm"
             >
-              <figure className="relative group">
+              <figure className="relative ">
                 <Image
                   src={tutor.profileImage}
                   width={400}
