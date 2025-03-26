@@ -35,7 +35,7 @@ const BookingsHistoryComponents = () => {
 
   const { user } = useUser();
   const email = user?.userEmail;
-  // console.log(email);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,12 +75,6 @@ const BookingsHistoryComponents = () => {
   //   return <Loading></Loading>;
   // }
 
-  //handle Booking cancel
-  // const handleBookingCancel = async (id: string) => {
-  //   await cancelBooking(id);
-  // };
-  // console.log("currenBookings: ", bookings);
-  //tableData
   const invoices = bookings?.map((booking: TBooking) => ({
     name: booking.student?.name,
     tutorName: booking.tutor?.name,
@@ -127,13 +121,13 @@ const BookingsHistoryComponents = () => {
           <div className="flex flex-col">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                <div className="overflow-hidden ">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
+                    <thead className="bg-gray-400/55 dark:bg-gray-800 border-b-black">
                       <tr>
                         <th
                           scope="col"
-                          className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right t0 dark:text-gray-400"
                         >
                           <div className="flex items-center gap-x-3">
                             <button className="flex items-center gap-x-2">
@@ -143,73 +137,70 @@ const BookingsHistoryComponents = () => {
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Address
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Phone
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           TutorName
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           TransactionID
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Status
                         </th>
 
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Subjects
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Date
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Duration
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           TotalPrice
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  dark:text-gray-400"
                         >
                           Actions
                         </th>
-                        <th scope="col" className="relative py-3.5 px-4">
-                          <span className="sr-only">Actions</span>
-                        </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                    <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 ">
                       {invoices?.map((booking, index) => (
-                        <tr key={index}>
+                        <tr key={index} className="border-b-black">
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                             <div className="inline-flex items-center gap-x-3">
                               <span>{booking.name}</span>

@@ -72,15 +72,26 @@ import { toast } from "sonner";
 import { TBooking } from "@/types/bookings";
 import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
-
   const [isUser, setIsUser] = useState<ITutor[] | []>([]);
   const [reviews, setReviews] = useState<IReview[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestedTutors, setRequestedTutors] = useState<string[]>([]);
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
+
+  const [searchValue, setSearchValue] = useState<string>("");
   const { user } = useUser();
 
   useEffect(() => {
@@ -127,6 +138,27 @@ const HomeComponent = () => {
     fetchTutors();
   }, [user]);
 
+  //filteredData
+
+  const filteredTutors = tutors
+    .filter((tutor) => {
+      if (!searchValue) return true;
+
+      const searchNumber = Number(searchValue);
+      const hourlyRateMaches =
+        !isNaN(searchNumber) && tutor.hourlyRate <= searchNumber;
+
+      return (
+        tutor.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        tutor.category.toLowerCase().includes(searchValue.toLowerCase()) ||
+        tutor.subjects.some((subject) =>
+          subject.toLowerCase().includes(searchValue.toLowerCase())
+        ) ||
+        hourlyRateMaches
+      );
+    })
+    .slice(0, 8);
+
   //handle Booking Request
   const handleRequest = async (id: string) => {
     const requestData = {
@@ -155,6 +187,8 @@ const HomeComponent = () => {
       </div>
     );
   }
+
+  console.log("value:", tutors);
   return (
     <div>
       {/* =============================Banner section=========================== */}
@@ -174,7 +208,7 @@ const HomeComponent = () => {
             <input
               type="text"
               placeholder="Search for tutors"
-              className=" w-full max-w-6xl rounded-md border border-gray-400 px-5 py-1 text-sm md:text-sm lg:text-lg text-gray-700"
+              className=" w-full max-w-6xl rounded-md border border-gray-400 px-5  text-sm md:text-sm lg:text-lg text-gray-700"
             />
           </div>
           <Button
@@ -404,9 +438,53 @@ const HomeComponent = () => {
             grade, or expertise and book sessions effortlessly. Learn smarter,
             achieve more!
           </p>
+          <div className="py-5 flex flex-wrap gap-2">
+            <input
+              type="text"
+              onChange={(e) => setSearchValue(e.currentTarget.value)}
+              placeholder="Search for tutors"
+              className=" w-full max-w-[30%] rounded-md border border-gray-400 px-5  text-sm md:text-sm lg:text-lg text-gray-700"
+            />
+            <Select>
+              <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent className="bg-white rounded-md border border-gray-400">
+                <SelectGroup>
+                  <SelectLabel>Category</SelectLabel>
+
+                  {[...new Set(tutors?.map((tutor) => tutor.category))].map(
+                    (category, index) => (
+                      <SelectItem key={index} value={category}>
+                        {category}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <Select>
+              <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
+                <SelectValue placeholder="Select Subjects" />
+              </SelectTrigger>
+              <SelectContent className="bg-white rounded-md border border-gray-400">
+                <SelectGroup>
+                  <SelectLabel>Subjects</SelectLabel>
+                  {[...new Set(tutors?.flatMap((tutor) => tutor.subjects))].map(
+                    (subject, index) => (
+                      <SelectItem key={index} value={subject}>
+                        {subject}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-3">
-          {tutors?.slice(0, 8).map((tutor, index) => (
+          {filteredTutors?.map((tutor, index) => (
             <div
               key={tutor._id || index}
               className="card bg-base-100 w-[95%] group border border-gray-200 hover:shadow-lg"
@@ -452,17 +530,11 @@ const HomeComponent = () => {
                   {user?.role === "student" && (
                     <div>
                       {acceptedTutors?.includes(tutor?._id) ? (
-                        <Button
-                          // onClick={() => handleRequest(tutor?._id)}
-                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
-                        >
+                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
                           Accpted
                         </Button>
                       ) : requestedTutors?.includes(tutor?._id) ? (
-                        <Button
-                          // onClick={() => handleRequest(tutor?._id)}
-                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
-                        >
+                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
                           Request
                         </Button>
                       ) : (
