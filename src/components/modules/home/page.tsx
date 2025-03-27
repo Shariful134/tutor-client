@@ -92,6 +92,9 @@ const HomeComponent = () => {
   const [acceptedTutors, setAccetedTutors] = useState<string[]>([]);
 
   const [searchValue, setSearchValue] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const [selectedPrice, setSelectedPrice] = useState<string>("");
   const { user } = useUser();
 
   useEffect(() => {
@@ -138,24 +141,39 @@ const HomeComponent = () => {
     fetchTutors();
   }, [user]);
 
-  //filteredData
-
   const filteredTutors = tutors
     .filter((tutor) => {
-      if (!searchValue) return true;
+      const searchQuery = searchValue.trim().toLowerCase();
 
-      const searchNumber = Number(searchValue);
-      const hourlyRateMaches =
-        !isNaN(searchNumber) && tutor.hourlyRate <= searchNumber;
+      const categoryMatch =
+        !selectedCategory ||
+        selectedCategory === "All" ||
+        tutor.category === selectedCategory;
 
-      return (
-        tutor.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-        tutor.category.toLowerCase().includes(searchValue.toLowerCase()) ||
+      const subjectMatch =
+        !selectedSubject ||
+        selectedSubject === "All" ||
+        tutor.subjects.includes(selectedSubject);
+
+      const priceMatch =
+        !selectedPrice ||
+        selectedPrice === "All" ||
+        (() => {
+          const [min, max] = selectedPrice.split("-").map(Number);
+          return tutor.hourlyRate >= min && tutor.hourlyRate <= max;
+        })();
+
+      const searchMatch =
+        !searchQuery ||
+        tutor.name.toLowerCase().includes(searchQuery) ||
+        tutor.category.toLowerCase().includes(searchQuery) ||
         tutor.subjects.some((subject) =>
-          subject.toLowerCase().includes(searchValue.toLowerCase())
+          subject.toLowerCase().includes(searchQuery)
         ) ||
-        hourlyRateMaches
-      );
+        (!isNaN(Number(searchQuery)) &&
+          tutor.hourlyRate <= Number(searchQuery));
+
+      return categoryMatch && subjectMatch && priceMatch && searchMatch;
     })
     .slice(0, 8);
 
@@ -187,7 +205,17 @@ const HomeComponent = () => {
       </div>
     );
   }
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+  };
 
+  const handleSubjectChange = (value: string) => {
+    setSelectedSubject(value);
+  };
+
+  const handlePriceChange = (value: string) => {
+    setSelectedPrice(value);
+  };
   console.log("value:", tutors);
   return (
     <div>
@@ -445,39 +473,57 @@ const HomeComponent = () => {
               placeholder="Search for tutors"
               className=" w-full max-w-[30%] rounded-md border border-gray-400 px-5  text-sm md:text-sm lg:text-lg text-gray-700"
             />
-            <Select>
+            <Select onValueChange={handleCategoryChange}>
               <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md border border-gray-400">
                 <SelectGroup>
                   <SelectLabel>Category</SelectLabel>
-
-                  {[...new Set(tutors?.map((tutor) => tutor.category))].map(
-                    (category, index) => (
-                      <SelectItem key={index} value={category}>
-                        {category}
-                      </SelectItem>
-                    )
-                  )}
+                  <SelectItem value="All">All</SelectItem>
+                  {[
+                    ...new Set(filteredTutors?.map((tutor) => tutor.category)),
+                  ].map((category, index) => (
+                    <SelectItem key={index} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
 
-            <Select>
+            <Select onValueChange={handleSubjectChange}>
               <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
                 <SelectValue placeholder="Select Subjects" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md border border-gray-400">
                 <SelectGroup>
                   <SelectLabel>Subjects</SelectLabel>
-                  {[...new Set(tutors?.flatMap((tutor) => tutor.subjects))].map(
-                    (subject, index) => (
-                      <SelectItem key={index} value={subject}>
-                        {subject}
-                      </SelectItem>
-                    )
-                  )}
+                  <SelectItem value="All">All</SelectItem>
+                  {[
+                    ...new Set(
+                      filteredTutors?.flatMap((tutor) => tutor.subjects)
+                    ),
+                  ].map((subject, index) => (
+                    <SelectItem key={index} value={subject}>
+                      {subject}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <Select onValueChange={handlePriceChange}>
+              <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
+                <SelectValue placeholder="Select Price" />
+              </SelectTrigger>
+              <SelectContent className="bg-white rounded-md border border-gray-400">
+                <SelectGroup>
+                  <SelectLabel>HourlyRate</SelectLabel>
+                  <SelectItem value="All">All</SelectItem>
+                  <SelectItem value="1-3">1-3</SelectItem>
+                  <SelectItem value="4-6">4-6</SelectItem>
+                  <SelectItem value="7-9">7-9</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
