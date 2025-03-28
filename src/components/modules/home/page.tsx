@@ -95,6 +95,7 @@ const HomeComponent = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [selectedPrice, setSelectedPrice] = useState<string>("");
+  const [filteredSubjects, setFilteredSubjects] = useState<string[]>([]);
   const { user } = useUser();
 
   useEffect(() => {
@@ -140,6 +141,13 @@ const HomeComponent = () => {
     };
     fetchTutors();
   }, [user]);
+
+  useEffect(() => {
+    // সব সাবজেক্ট বের করে আনছি (ডুপ্লিকেট ছাড়া)
+    const allSubjects = [...new Set(tutors.flatMap((tutor) => tutor.subjects))];
+
+    setFilteredSubjects(allSubjects); // "All" এখানে বসাচ্ছি না
+  }, [tutors]);
 
   const filteredTutors = tutors
     .filter((tutor) => {
@@ -205,8 +213,27 @@ const HomeComponent = () => {
       </div>
     );
   }
+
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
+
+    if (value === "All") {
+      // সব সাবজেক্ট দেখাবে, কিন্তু "All" একবারই থাকবে
+      const allSubjects = [
+        "All",
+        ...new Set(tutors.flatMap((tutor) => tutor.subjects)),
+      ];
+
+      setFilteredSubjects(allSubjects);
+    } else {
+      // নির্দিষ্ট ক্যাটেগরির টিউটরদের ফিল্টার করা
+      const filteredTutors = tutors.filter((tutor) => tutor.category === value);
+      const subjectsInCategory = [
+        ...new Set(filteredTutors.flatMap((tutor) => tutor.subjects)),
+      ];
+
+      setFilteredSubjects(["All", ...subjectsInCategory]);
+    }
   };
 
   const handleSubjectChange = (value: string) => {
@@ -481,13 +508,13 @@ const HomeComponent = () => {
                 <SelectGroup>
                   <SelectLabel>Category</SelectLabel>
                   <SelectItem value="All">All</SelectItem>
-                  {[
-                    ...new Set(filteredTutors?.map((tutor) => tutor.category)),
-                  ].map((category, index) => (
-                    <SelectItem key={index} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
+                  {[...new Set(tutors?.map((tutor) => tutor.category))].map(
+                    (category, index) => (
+                      <SelectItem key={index} value={category}>
+                        {category}
+                      </SelectItem>
+                    )
+                  )}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -499,16 +526,17 @@ const HomeComponent = () => {
               <SelectContent className="bg-white rounded-md border border-gray-400">
                 <SelectGroup>
                   <SelectLabel>Subjects</SelectLabel>
-                  <SelectItem value="All">All</SelectItem>
-                  {[
-                    ...new Set(
-                      filteredTutors?.flatMap((tutor) => tutor.subjects)
-                    ),
-                  ].map((subject, index) => (
-                    <SelectItem key={index} value={subject}>
-                      {subject}
-                    </SelectItem>
-                  ))}
+                  {!filteredSubjects.includes("All") && (
+                    <SelectItem value="All">All</SelectItem>
+                  )}
+                  {filteredSubjects.map(
+                    (subject, index) =>
+                      subject !== "All" && (
+                        <SelectItem key={index} value={subject}>
+                          {subject}
+                        </SelectItem>
+                      )
+                  )}
                 </SelectGroup>
               </SelectContent>
             </Select>

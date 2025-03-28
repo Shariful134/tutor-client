@@ -1,5 +1,5 @@
 "use client";
-import Logo from "@/app/assest/svgs/Logo";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -53,7 +53,6 @@ const RegisterForm = () => {
   return (
     <div className=" border border-gray-300 w-full flex-grow  max-w-md p-5 rounded">
       <div className="flex items-center justify-center space-x-2 pb-2">
-        <Logo />
         <h1 className="font-semibold text-xl">Register</h1>
         <p className="text-sm text-extralight text-gray-600">
           {" "}

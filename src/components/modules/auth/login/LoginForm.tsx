@@ -17,11 +17,9 @@ import Link from "next/link";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUser, rechaptchaTokenVerification } from "@/services/authService";
+import { loginUser } from "@/services/authService";
 import { toast } from "sonner";
 
-import ReCAPTCHA from "react-google-recaptcha";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginSchema } from "./loginValidation";
 import { useUser } from "@/context/UserContext";
@@ -38,18 +36,6 @@ const LoginForm = () => {
   const redirect = searchparams.get("redirectPath");
   const router = useRouter();
   const { setIsLoading } = useUser();
-
-  const [rechaptchaStatus, setRechaptchaStatus] = useState(false);
-  const rechaptchaHandler = async (value: string | null) => {
-    try {
-      const res = await rechaptchaTokenVerification(value!);
-      if (res.success) {
-        setRechaptchaStatus(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data);
@@ -72,7 +58,6 @@ const LoginForm = () => {
   return (
     <div className="border border-gray-300 w-full flex-grow  max-w-md p-5 rounded">
       <div className="flex items-center justify-center space-x-2 pb-2">
-        <Logo />
         <h1 className="font-semibold text-xl">Login</h1>
         <p className="text-sm text-extralight text-gray-600"> Wlcome back</p>
       </div>
@@ -117,13 +102,7 @@ const LoginForm = () => {
           />
 
           <div className="w-full flex flex-grow flex-col space-y-1">
-            <ReCAPTCHA
-              className="mx-auto"
-              sitekey={process.env.NEXT_PUBLIC_RECHAPTCHA_CLIENT_KEY as string}
-              onChange={rechaptchaHandler}
-            />
             <Button
-              // disabled={rechaptchaStatus ? false : true}
               className="roudend-full cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
               type="submit"
             >
