@@ -143,10 +143,9 @@ const HomeComponent = () => {
   }, [user]);
 
   useEffect(() => {
-    // সব সাবজেক্ট বের করে আনছি (ডুপ্লিকেট ছাড়া)
     const allSubjects = [...new Set(tutors.flatMap((tutor) => tutor.subjects))];
 
-    setFilteredSubjects(allSubjects); // "All" এখানে বসাচ্ছি না
+    setFilteredSubjects(allSubjects);
   }, [tutors]);
 
   const filteredTutors = tutors
@@ -217,23 +216,12 @@ const HomeComponent = () => {
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
 
-    if (value === "All") {
-      // সব সাবজেক্ট দেখাবে, কিন্তু "All" একবারই থাকবে
-      const allSubjects = [
-        "All",
-        ...new Set(tutors.flatMap((tutor) => tutor.subjects)),
-      ];
+    const filteredTutors = tutors.filter((tutor) => tutor.category === value);
+    const subjectsInCategory = [
+      ...new Set(filteredTutors.flatMap((tutor) => tutor.subjects)),
+    ];
 
-      setFilteredSubjects(allSubjects);
-    } else {
-      // নির্দিষ্ট ক্যাটেগরির টিউটরদের ফিল্টার করা
-      const filteredTutors = tutors.filter((tutor) => tutor.category === value);
-      const subjectsInCategory = [
-        ...new Set(filteredTutors.flatMap((tutor) => tutor.subjects)),
-      ];
-
-      setFilteredSubjects(["All", ...subjectsInCategory]);
-    }
+    setFilteredSubjects(["All", ...subjectsInCategory]);
   };
 
   const handleSubjectChange = (value: string) => {
@@ -506,7 +494,6 @@ const HomeComponent = () => {
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md border border-gray-400">
                 <SelectGroup>
-                  <SelectLabel>Category</SelectLabel>
                   <SelectItem value="All">All</SelectItem>
                   {[...new Set(tutors?.map((tutor) => tutor.category))].map(
                     (category, index) => (
@@ -525,7 +512,6 @@ const HomeComponent = () => {
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md border border-gray-400">
                 <SelectGroup>
-                  <SelectLabel>Subjects</SelectLabel>
                   {!filteredSubjects.includes("All") && (
                     <SelectItem value="All">All</SelectItem>
                   )}
