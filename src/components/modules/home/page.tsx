@@ -506,26 +506,44 @@ const HomeComponent = () => {
               </SelectContent>
             </Select>
 
-            <Select onValueChange={handleSubjectChange}>
-              <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
-                <SelectValue placeholder="Select Subjects" />
-              </SelectTrigger>
-              <SelectContent className="bg-white rounded-md border border-gray-400">
-                <SelectGroup>
-                  {!filteredSubjects.includes("All") && (
+            {selectedCategory === "All" ? (
+              <Select onValueChange={handleSubjectChange}>
+                <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
+                  <SelectValue placeholder="Select Subjects" />
+                </SelectTrigger>
+                <SelectContent className="bg-white rounded-md border border-gray-400">
+                  <SelectGroup>
                     <SelectItem value="All">All</SelectItem>
-                  )}
-                  {filteredSubjects.map(
-                    (subject, index) =>
-                      subject !== "All" && (
-                        <SelectItem key={index} value={subject}>
-                          {subject}
-                        </SelectItem>
-                      )
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+                    {[
+                      ...new Set(tutors.flatMap((tutor) => tutor.subjects)),
+                    ].map((subject, index) => (
+                      <SelectItem key={index} value={subject}>
+                        {subject}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            ) : (
+              <Select onValueChange={handleSubjectChange}>
+                <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
+                  <SelectValue placeholder="Select Subjects" />
+                </SelectTrigger>
+                <SelectContent className="bg-white rounded-md border border-gray-400">
+                  <SelectGroup>
+                    <SelectItem value="All">All</SelectItem>
+                    {filteredSubjects.map(
+                      (subject, index) =>
+                        subject !== "All" && (
+                          <SelectItem key={index} value={subject}>
+                            {subject}
+                          </SelectItem>
+                        )
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
 
             <Select onValueChange={handlePriceChange}>
               <SelectTrigger className="max-w-[30%] rounded-md border border-gray-400 ">
