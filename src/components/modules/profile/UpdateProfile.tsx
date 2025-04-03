@@ -46,7 +46,7 @@ const UpdateProfile = () => {
         const data = await getAllTutors();
         if (data?.data) {
           const foundTutor = data.data.find(
-            (item: any) => item.email === user.userEmail
+            (item: any) => item.email === user?.userEmail
           );
           setTutor(foundTutor || null);
         }
@@ -159,12 +159,6 @@ const UpdateProfile = () => {
             />
           )}
         </div>
-        {/* <Button
-          className=" w-20 cursor-pointer border-0 hover:border btn bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
-          type="submit"
-        >
-          {isSubmitting ? "Updating..." : "Update"}
-        </Button> */}
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

@@ -31,6 +31,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 export interface Availability {
   day: string;
   time: string;
@@ -81,6 +93,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MessageSquareMore } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const HomeComponent = () => {
   const [tutors, setTutors] = useState<ITutor[] | []>([]);
@@ -96,7 +119,13 @@ const HomeComponent = () => {
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [selectedPrice, setSelectedPrice] = useState<string>("");
   const [filteredSubjects, setFilteredSubjects] = useState<string[]>([]);
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
+  const [text, setText] = useState("");
   const { user } = useUser();
+
+  const form = useForm();
 
   useEffect(() => {
     const fetchTutors = async () => {
@@ -231,7 +260,11 @@ const HomeComponent = () => {
   const handlePriceChange = (value: string) => {
     setSelectedPrice(value);
   };
-  console.log("value:", tutors);
+
+  const onSubmit = async () => {
+    console.log(text);
+  };
+
   return (
     <div>
       {/* =============================Banner section=========================== */}
@@ -606,28 +639,80 @@ const HomeComponent = () => {
                 </div>
                 <div className=" flex flex-wrap gap-y-2 justify-between  items-center">
                   {user?.role === "student" && (
-                    <div>
-                      {acceptedTutors?.includes(tutor?._id) ? (
-                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                          Accpted
-                        </Button>
-                      ) : requestedTutors?.includes(tutor?._id) ? (
-                        <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
-                          Request
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => handleRequest(tutor?._id)}
-                          className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
-                        >
-                          Add
-                        </Button>
-                      )}
+                    <div className="flex justify-between items-center gap-8">
+                      <div>
+                        {acceptedTutors?.includes(tutor?._id) ? (
+                          <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                            Accpted
+                          </Button>
+                        ) : requestedTutors?.includes(tutor?._id) ? (
+                          <Button className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+                            Request
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => handleRequest(tutor?._id)}
+                            className="roudend-ful cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+                          >
+                            Add
+                          </Button>
+                        )}
+                      </div>
+                      <div className=" hover:bg-gray-400/25">
+                        <Dialog open={openModal} onOpenChange={setOpenModal}>
+                          <DialogTrigger asChild>
+                            <Button>
+                              {" "}
+                              <MessageSquareMore />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px] bg-white">
+                            <DialogHeader>
+                              <DialogTitle></DialogTitle>
+                              <DialogDescription></DialogDescription>
+                            </DialogHeader>
+
+                            <Form {...form}>
+                              <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <div className="grid grid-cols-1  gap-2">
+                                  <FormField
+                                    control={form.control}
+                                    name="address"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Address</FormLabel>
+                                        <FormControl>
+                                          <Textarea
+                                            onChange={(e) =>
+                                              setText(e.target.value)
+                                            }
+                                            name="comment"
+                                          ></Textarea>
+                                        </FormControl>
+
+                                        <FormMessage className="text-red-500" />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                                <div>
+                                  <Button
+                                    className="mt-2 cursor-pointer border-0 hover:border btn bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+                                    type="submit"
+                                  >
+                                    Submit
+                                  </Button>
+                                </div>
+                              </form>
+                            </Form>
+                            <DialogFooter></DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </div>
                   )}
-
                   <Link href={`/booking/${tutor._id}`}>
-                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ...">
+                    <Button className="roudend-ful  cursor-pointer hover:text-gray-900 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
                       Booking
                     </Button>
                   </Link>
