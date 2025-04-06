@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import Logo from "@/app/assest/svgs/Logo";
 import { Button } from "@/components/ui/button";
 import {
   Form,

@@ -72,7 +72,10 @@ import { useEffect, useState } from "react";
 import { getAllTutors, getAllUsers } from "@/services/User";
 import Link from "next/link";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
-import { getAllReviewComments } from "@/services/User/ReviewComment";
+import {
+  createReviewComments,
+  getAllReviewComments,
+} from "@/services/User/ReviewComment";
 import { IReview } from "@/types/review";
 import { useUser } from "@/context/UserContext";
 import {
@@ -120,9 +123,10 @@ const HomeComponent = () => {
   const [selectedPrice, setSelectedPrice] = useState<string>("");
   const [filteredSubjects, setFilteredSubjects] = useState<string[]>([]);
 
+  const [tutorId, setTutorId] = useState("");
+
   const [openModal, setOpenModal] = useState<boolean>(false);
 
-  const [text, setText] = useState("");
   const { user } = useUser();
 
   const form = useForm();
@@ -133,13 +137,14 @@ const HomeComponent = () => {
         setLoading(true);
 
         const usersData = await getAllUsers();
+        const data = await getAllReviewComments();
+        setReviews(data?.data);
 
         const loggedUser = usersData?.data?.filter(
           (item: ITutor) => item.email === user?.userEmail
         );
 
         setIsUser(loggedUser);
-        console.log("loggedUser: ", loggedUser, isUser);
 
         const allTutor = usersData?.data?.filter(
           (item: ITutor) => item.role === "tutor"
@@ -172,13 +177,15 @@ const HomeComponent = () => {
   }, [user]);
 
   useEffect(() => {
-    const allSubjects = [...new Set(tutors.flatMap((tutor) => tutor.subjects))];
+    const allSubjects = [
+      ...new Set(tutors?.flatMap((tutor) => tutor.subjects)),
+    ];
 
     setFilteredSubjects(allSubjects);
   }, [tutors]);
 
   const filteredTutors = tutors
-    .filter((tutor) => {
+    ?.filter((tutor) => {
       const searchQuery = searchValue.trim().toLowerCase();
 
       const categoryMatch =
@@ -245,9 +252,9 @@ const HomeComponent = () => {
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
 
-    const filteredTutors = tutors.filter((tutor) => tutor.category === value);
+    const filteredTutors = tutors?.filter((tutor) => tutor.category === value);
     const subjectsInCategory = [
-      ...new Set(filteredTutors.flatMap((tutor) => tutor.subjects)),
+      ...new Set(filteredTutors?.flatMap((tutor) => tutor.subjects)),
     ];
 
     setFilteredSubjects(["All", ...subjectsInCategory]);
@@ -261,8 +268,19 @@ const HomeComponent = () => {
     setSelectedPrice(value);
   };
 
-  const onSubmit = async () => {
-    console.log(text);
+  const onSubmit = async (data: FieldValues) => {
+    const rating = Number(data?.rating);
+    const review = { ...data, rating, tutor: tutorId, student: isUser[0]?._id };
+    try {
+      setLoading(true);
+      const res = await createReviewComments(review);
+      if (res?.success) {
+        toast.success(res?.message);
+      } else toast.success(res?.message);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -530,7 +548,7 @@ const HomeComponent = () => {
                   <SelectItem value="All">All</SelectItem>
                   {[...new Set(tutors?.map((tutor) => tutor.category))].map(
                     (category, index) => (
-                      <SelectItem key={index} value={category}>
+                      <SelectItem key={index} value={category || "1"}>
                         {category}
                       </SelectItem>
                     )
@@ -548,9 +566,9 @@ const HomeComponent = () => {
                   <SelectGroup>
                     <SelectItem value="All">All</SelectItem>
                     {[
-                      ...new Set(tutors.flatMap((tutor) => tutor.subjects)),
+                      ...new Set(tutors?.flatMap((tutor) => tutor.subjects)),
                     ].map((subject, index) => (
-                      <SelectItem key={index} value={subject}>
+                      <SelectItem key={index} value={subject || "1"}>
                         {subject}
                       </SelectItem>
                     ))}
@@ -565,10 +583,10 @@ const HomeComponent = () => {
                 <SelectContent className="bg-white rounded-md border border-gray-400">
                   <SelectGroup>
                     <SelectItem value="All">All</SelectItem>
-                    {filteredSubjects.map(
+                    {filteredSubjects?.map(
                       (subject, index) =>
                         subject !== "All" && (
-                          <SelectItem key={index} value={subject}>
+                          <SelectItem key={index} value={subject || "1"}>
                             {subject}
                           </SelectItem>
                         )
@@ -659,10 +677,9 @@ const HomeComponent = () => {
                         )}
                       </div>
                       <div className=" hover:bg-gray-400/25">
-                        <Dialog open={openModal} onOpenChange={setOpenModal}>
+                        <Dialog>
                           <DialogTrigger asChild>
                             <Button>
-                              {" "}
                               <MessageSquareMore />
                             </Button>
                           </DialogTrigger>
@@ -671,32 +688,48 @@ const HomeComponent = () => {
                               <DialogTitle></DialogTitle>
                               <DialogDescription></DialogDescription>
                             </DialogHeader>
-
                             <Form {...form}>
                               <form onSubmit={form.handleSubmit(onSubmit)}>
                                 <div className="grid grid-cols-1  gap-2">
                                   <FormField
                                     control={form.control}
-                                    name="address"
+                                    name="comment"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>Address</FormLabel>
+                                        <FormLabel>Your opinion</FormLabel>
                                         <FormControl>
                                           <Textarea
-                                            onChange={(e) =>
-                                              setText(e.target.value)
-                                            }
-                                            name="comment"
+                                            {...field}
+                                            value={field.value || ""}
                                           ></Textarea>
                                         </FormControl>
-
+                                        <FormMessage className="text-red-500" />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="rating"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Your Rating</FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            type="number"
+                                            className="border border-gray-400 "
+                                            {...field}
+                                            value={field.value || ""}
+                                          />
+                                        </FormControl>
                                         <FormMessage className="text-red-500" />
                                       </FormItem>
                                     )}
                                   />
                                 </div>
+
                                 <div>
                                   <Button
+                                    onClick={() => setTutorId(tutor?._id)}
                                     className="mt-2 cursor-pointer border-0 hover:border btn bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
                                     type="submit"
                                   >
