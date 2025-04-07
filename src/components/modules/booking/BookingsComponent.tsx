@@ -76,11 +76,11 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
         );
         setStudent(foundStudent);
 
-        if (foundTutor.length > 0) {
+        if (foundTutor?.length > 0) {
           setTutor(foundTutor[0]);
         }
-        if (foundStudent.length > 0) {
-          setStudentId(foundStudent[0]._id);
+        if (foundStudent?.length > 0) {
+          setStudentId(foundStudent[0]?._id);
         }
         if (bookingsData?.data) {
           setBookings(bookingsData?.data);
@@ -94,8 +94,8 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
   }, [user?.userEmail, tutorId]);
 
   useEffect(() => {
-    if (bookings.length > 0 && studentId) {
-      const foundBooking = bookings.find(
+    if (bookings?.length > 0 && studentId) {
+      const foundBooking = bookings?.find(
         (booking) =>
           booking.student._id === studentId && booking.tutor._id === tutorId
       );

@@ -146,14 +146,6 @@ const StudentBookingsComponents = () => {
         <div className="pt-5">
           <NMTable columns={columns} data={bookings || []}></NMTable>
         </div>
-        {/* <div>
-              <DeleteConfirmationModal
-                name={selectedItem}
-                isOpen={isModalOpen}
-                onOpenChange={setModalOpen}
-                onConfirm={handleDeleteConfirm}
-              />
-            </div> */}
       </div>
     </div>
   );

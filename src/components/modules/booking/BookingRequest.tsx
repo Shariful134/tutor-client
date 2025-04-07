@@ -86,12 +86,12 @@ const BookingRequest = () => {
       accessorKey: "tutor",
       header: () => <div className="text-right w-8">Subjects</div>,
       cell: ({ row }) => {
-        const subjects = row.original.tutor.subjects;
+        const subjects = row.original.tutor?.subjects;
 
         return (
           <div className="flex items-center space-x-3">
             <div className="text-right font-medium w-8">
-              {subjects.join(", ")}
+              {subjects?.join(", ")}
             </div>
           </div>
         );

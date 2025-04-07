@@ -58,6 +58,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   title: "Bookings Request",
                   url: "/tutor/bookings",
                 },
+                {
+                  title: "Bookings History",
+                  url: "/tutor/bookingsHistory",
+                },
               ],
       },
 

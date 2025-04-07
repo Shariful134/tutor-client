@@ -35,7 +35,7 @@ export function BookingUpdateComponent({
     undefined
   );
 
-  // const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [time, setTime] = useState(0);
   const form = useForm({
     defaultValues: {
@@ -82,7 +82,7 @@ export function BookingUpdateComponent({
       if (res?.success) {
         toast?.success(res?.message);
         setReFectch(true);
-        // setOpenModal(false);
+        setOpenModal(false);
       } else {
         toast.error(res?.message);
       }
@@ -92,9 +92,8 @@ export function BookingUpdateComponent({
     console.log(data);
   };
 
-  //open={openModal} onOpenChange={setOpenModal}
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <button className=" transition-colors cursor-pointer btn btn-sm duration-200  inline-flex items-center px-3 py-1 border-0  rounded-md gap-x-2 text-emerald-500  bg-emerald-100/60 dark:bg-gray-800 focus:outline-none">
           Update

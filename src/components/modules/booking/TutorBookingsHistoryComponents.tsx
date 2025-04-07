@@ -13,7 +13,7 @@ import { cancelBooking, getAllBookings } from "@/services/request";
 import { toast } from "sonner";
 import { BookingUpdateComponent } from "./BookingUpdateComponent";
 
-const BookingsHistoryComponents = () => {
+const TutorBookingsHistoryComponents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
 
@@ -276,4 +276,4 @@ const BookingsHistoryComponents = () => {
   );
 };
 
-export default BookingsHistoryComponents;
+export default TutorBookingsHistoryComponents;
