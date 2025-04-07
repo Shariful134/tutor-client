@@ -103,7 +103,7 @@ export default function Navbar() {
             }
             href="/contact"
           >
-            Contuct
+            Contact
           </Link>
           <Link
             className={
@@ -112,6 +112,14 @@ export default function Navbar() {
             href="/about"
           >
             About
+          </Link>
+          <Link
+            className={
+              pathname == "/news" ? "text-purple-600 underline" : "text-black"
+            }
+            href="/news"
+          >
+            News{" "}
           </Link>
 
           {user ? (

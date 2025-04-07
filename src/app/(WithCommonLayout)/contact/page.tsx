@@ -1,6 +1,10 @@
+import ContactComponents from "@/components/modules/contact/ContactComponents";
+
 const ContactPage = () => {
   return (
-    <div className="px-10 pt-20 text-4xl text-center">This is Contact page</div>
+    <div className="pt-20 px-10 h-[600]">
+      <ContactComponents></ContactComponents>
+    </div>
   );
 };
 
