@@ -115,11 +115,11 @@ export default function Navbar() {
           </Link>
           <Link
             className={
-              pathname == "/news" ? "text-purple-600 underline" : "text-black"
+              pathname == "/blog" ? "text-purple-600 underline" : "text-black"
             }
-            href="/news"
+            href="/blog"
           >
-            News{" "}
+            Blogs{" "}
           </Link>
 
           {user ? (
