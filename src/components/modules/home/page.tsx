@@ -161,7 +161,11 @@ const HomeComponent = () => {
 
           // filter out the checking accepted request
           const acceptedTutorId = bookingsData?.data
-            ?.filter((item: any) => item.bookingRequest === true)
+            ?.filter(
+              (item: any) =>
+                item.bookingRequest === true &&
+                item.student?._id === loggedUser[0]?._id
+            )
             .map((item: any) => item.tutor);
           setAccetedTutors(acceptedTutorId);
           setLoading(false);
@@ -679,7 +683,7 @@ const HomeComponent = () => {
                       <div className=" hover:bg-gray-400/25">
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button>
+                            <Button className="">
                               <MessageSquareMore />
                             </Button>
                           </DialogTrigger>
@@ -774,7 +778,7 @@ const HomeComponent = () => {
             <CarouselContent>
               {reviews?.map((review) => (
                 <CarouselItem
-                  key={review._id}
+                  key={review?._id}
                   className="md:basis-1/2 lg:basis-1/3"
                 >
                   <div className="p-1">
@@ -782,16 +786,16 @@ const HomeComponent = () => {
                       <CardContent className="flex flex-col items-center justify-center p-4">
                         <Image
                           className="rounded-full"
-                          src={review.student.profileImage}
+                          src={review?.student?.profileImage}
                           width={100}
                           height={200}
-                          alt={`${review.student.name}'s profile`}
+                          alt={`${review?.student?.name}'s profile`}
                         />
                         <h3 className="text-lg font-semibold">
-                          {review.student.name}
+                          {review?.student?.name}
                         </h3>
                         <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-                          {review.comment}
+                          {review?.comment}
                         </p>
 
                         <div className="flex gap-1 text-sm md:text-sm lg:text-lg text-gray-700">
@@ -827,45 +831,43 @@ const HomeComponent = () => {
           <div>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-3">
-                <AccordionTrigger className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  How can I find the right tutor for the right tutor find the
-                  right tutor my needs?
+                <AccordionTrigger className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5 ">
+                  How do I find a tutor?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  Once you find a tutor, you can check their availability and
-                  book a session at a convenient time. Payment is processed
-                  securely through our platform.
+                  To find a tutor, browse available profiles, filter by subject
+                  or location, view ratings, and book a session directly through
+                  our secure, easy-to-use platform.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-1">
                 <AccordionTrigger className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  What subjects can I get tutoring for on the platform?
+                  How are payments processed?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  Yes, you can reschedule or cancel a session according to the
-                  cancellation policy. Make sure to check the terms before
-                  booking.
+                  Payments are securely processed through our platform using
+                  SSLCommerz, Stripe, or PayPal. Choose your method, pay safely,
+                  and get instant booking confirmation.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-2">
                 <AccordionTrigger className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  Is it possible to reschedule or cancel my sessions?
+                  What if I’m not satisfied with my tutor?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  You can browse tutors by subject, grade level, or expertise.
-                  Use the search bar or explore categories to find the right
-                  tutor for you.
+                  Yes, you can cancel a session from your dashboard. If you're
+                  not satisfied with your tutor, contact support—we’ll help you
+                  reschedule or find a better match.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">
                 <AccordionTrigger className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  How can I find the right tutor for the right tutor find the
-                  right tutor my needs?
+                  What if I’m not satisfied with my tutor?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  Once you find a tutor, you can check their availability and
-                  book a session at a convenient time. Payment is processed
-                  securely through our platform.
+                  If you're not satisfied with your tutor, you can request a new
+                  match or contact support for a refund or alternative tutor
+                  options. We're here to help!
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">

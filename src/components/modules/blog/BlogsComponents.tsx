@@ -10,13 +10,14 @@ import { Input } from "@/components/ui/input";
 import { MdDateRange } from "react-icons/md";
 import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 import { useUser } from "@/context/UserContext";
+import { Item } from "@radix-ui/react-dropdown-menu";
 
 const BlogsComponents = () => {
   const [education, setEducation] = useState<NewsArticle[] | []>([]);
   const [industrial, setIndustrial] = useState<NewsArticle[] | []>([]);
   const [educationData, setEducationData] = useState(false);
   const [industrialData, setIndustrialData] = useState(false);
-  // const [blogs, setBlogs] = useState<string>("");
+  const [blogs, setBlogs] = useState<string>("");
   const { setIsLoading, isLoading } = useUser();
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +64,13 @@ d09cf0c70d334857803d42a640b4e7bb
   );
   const contentwordsIndustrial = industrial?.map((item: NewsArticle) =>
     item.content.split("").slice(0, 100)
+  );
+
+  const educationFiltered = education.filter((item) =>
+    item.title.toLowerCase().includes(blogs.toLowerCase())
+  );
+  const industrialFiltered = industrial.filter((item) =>
+    item.title.toLowerCase().includes(blogs.toLowerCase())
   );
 
   if (isLoading)
@@ -166,7 +174,7 @@ d09cf0c70d334857803d42a640b4e7bb
               <Image
                 src={article?.urlToImage}
                 width={1900}
-                height={1300}
+                height={100}
                 priority={true}
                 alt="blogImage"
                 className="rounded-lg"
@@ -224,7 +232,7 @@ d09cf0c70d334857803d42a640b4e7bb
         {/* ==================search and rescently posted========================  */}
         <div className=" max-w-[30%] mt-5 order-1 md:order-2">
           <Input
-            // onChange={(e) => setBlogs(e.target.value)}
+            onChange={(e) => setBlogs(e.target.value)}
             placeholder="Search haere"
             className="max-w-lg"
           ></Input>
