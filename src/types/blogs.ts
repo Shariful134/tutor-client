@@ -1,12 +1,13 @@
-export type NewsArticle = {
+export interface NewsArticle {
+  author: string | null;
   title: string;
   description: string;
-  content: string;
   url: string;
-  image: string;
+  urlToImage: string;
   publishedAt: string;
+  content: string;
   source: {
+    id: string | null;
     name: string;
-    url: string;
   };
-};
+}
