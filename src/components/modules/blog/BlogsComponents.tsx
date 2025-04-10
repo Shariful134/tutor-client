@@ -71,7 +71,7 @@ d09cf0c70d334857803d42a640b4e7bb
         <SkeletonLoading />
       </div>
     );
-  console.log(education);
+
   return (
     <div className="pb-5 px-10">
       <div className="relative">
@@ -103,7 +103,7 @@ d09cf0c70d334857803d42a640b4e7bb
       </div>
       <div className="flex flex-col md:flex-row gap-15 sm:justify-center">
         <div className="max-w-[70%] order-2 md:order-1">
-          {education?.slice(0, 1)?.map((article: NewsArticle, index) => (
+          {education?.slice(13, 14)?.map((article: NewsArticle, index) => (
             <div key={index} className="mt-5">
               <Image
                 src={article?.urlToImage}
@@ -161,7 +161,7 @@ d09cf0c70d334857803d42a640b4e7bb
               )}
             </div>
           ))}
-          {industrial?.slice(3)?.map((article: NewsArticle, index) => (
+          {industrial?.slice(7, 8)?.map((article: NewsArticle, index) => (
             <div key={index}>
               <Image
                 src={article?.urlToImage}
@@ -230,7 +230,7 @@ d09cf0c70d334857803d42a640b4e7bb
           ></Input>
           <div>
             <h2 className="text-2xl pt-5">Categories</h2>
-            <div className="flex justify-between pt-5">
+            <div className="flex justify-between pt-5 ">
               <p className="text-sm md:text-sm lg:text-lg text-gray-700 ">
                 Educational
               </p>{" "}
@@ -259,10 +259,10 @@ d09cf0c70d334857803d42a640b4e7bb
             {" "}
             <h2 className="text-2xl pt-10">Recently Posted</h2>
             <div>
-              {education?.slice(0, 1)?.map((article: NewsArticle, index) => (
+              {education?.slice(0, 2)?.map((article: NewsArticle, index) => (
                 <div
                   key={index}
-                  className="mt-5 flex flex-col md:flex-row gap-2 "
+                  className="mt-5 flex flex-col md:flex-row gap-2"
                 >
                   <Image
                     src={article?.urlToImage}
@@ -290,10 +290,10 @@ d09cf0c70d334857803d42a640b4e7bb
               ))}
             </div>
             <div>
-              {industrial?.slice(5, 10)?.map((article: NewsArticle, index) => (
+              {industrial?.slice(6, 10)?.map((article: NewsArticle, index) => (
                 <div
                   key={index}
-                  className="mt-5 flex flex-col md:flex-row gap-2 "
+                  className="mt-5 flex flex-col md:flex-row gap-2  "
                 >
                   <Image
                     src={article?.urlToImage}
@@ -301,7 +301,7 @@ d09cf0c70d334857803d42a640b4e7bb
                     height={1300}
                     priority={true}
                     alt="blogImage"
-                    className="rounded-lg"
+                    className="rounded-lg "
                   ></Image>
                   <div className="">
                     <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
