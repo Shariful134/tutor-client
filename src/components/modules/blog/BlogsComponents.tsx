@@ -26,9 +26,9 @@ const BlogsComponents = () => {
         const response = await fetch(
           `https://gnews.io/api/v4/search?q=education%20tips&lang=en&max=10&apikey=33b6dfeb530be2d1acbede3ad6af7965`
         );
-        const searchData = await fetch(
-          `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&country=bd&max=10&token=33b6dfeb530be2d1acbede3ad6af7965`
-        );
+        // const searchData = await fetch(
+        //   `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&country=bd&max=10&token=33b6dfeb530be2d1acbede3ad6af7965`
+        // );
 
         const industrialRresponse = await fetch(
           "https://gnews.io/api/v4/search?q=industrial&lang=en&max=10&apikey=33b6dfeb530be2d1acbede3ad6af7965"
@@ -36,8 +36,8 @@ const BlogsComponents = () => {
 
         const industrialResult = await industrialRresponse.json();
         const educationResult = await response.json();
-        const searchResult = await searchData.json();
-        setSearchNews(searchResult.articles || []);
+        // const searchResult = await searchData.json();
+        // setSearchNews(searchResult.articles || []);
         setIndustrial(industrialResult?.articles || []);
         setEducation(educationResult?.articles || []);
         setIsLoading(false);
@@ -48,7 +48,9 @@ const BlogsComponents = () => {
     fetchData();
   }, []);
 
-  console.log("searchNews:", searchNews);
+  const recentlyUpdated = education?.slice(0, 3)?.length;
+  const recentlyPosted = education?.slice(0, 2)?.length;
+
   const curretntdate = new Date().toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -70,22 +72,25 @@ const BlogsComponents = () => {
     item.content.split("").slice(0, 100)
   );
 
-  // const educationFiltered = education.filter((item) =>
-  //   item.title.toLowerCase().includes(blogs.toLowerCase())
-  // );
-  // const industrialFiltered = industrial.filter((item) =>
-  //   item.title.toLowerCase().includes(blogs.toLowerCase())
-  // );
+  const educationFiltered = education.filter((item) =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const industrialFiltered = industrial.filter((item) =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  console.log("education: ", educationFiltered);
+  console.log("industrialL: ", industrialFiltered);
+  console.log("SearachQuery: ", searchQuery);
   if (isLoading)
     return (
       <div className="pt-20 flex justify-center">
         <SkeletonLoading />
       </div>
     );
-
+  console.log(education);
   return (
-    <div className="pb-5 px-10">
+    <div className="pb-5">
       <div className="relative">
         <Image
           src={photo}
@@ -113,8 +118,8 @@ const BlogsComponents = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row gap-15 sm:justify-center">
-        <div className="max-w-[70%] order-2 md:order-1">
+      <div className="flex flex-col md:flex-row gap-15 sm:justify-start ">
+        <div className=" md:w-[70%] sm:w-full order-2 md:order-1 ">
           {education?.slice(1, 2)?.map((article: NewsArticle, index) => (
             <div key={index} className="mt-5 mb-5">
               <Image
@@ -125,7 +130,7 @@ const BlogsComponents = () => {
                 alt="blogImage"
                 className="rounded-lg"
               ></Image>
-              <div className="flex  items-center gap-5 pt-1 pb-2">
+              <div className="flex items-center gap-5 pt-1 pb-2">
                 <div className="flex justify-center items-center  text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
                   {" "}
                   <RiAdminFill />
@@ -145,7 +150,7 @@ const BlogsComponents = () => {
               <h2 className="text-2xl font-semibold text-gray-700 ">
                 <Link
                   className="hover:underline hover:text-purple-500"
-                  href={"https://typeforyou.org/vanguard-529/"}
+                  href={article?.url}
                 >
                   {article?.title}
                 </Link>
@@ -173,8 +178,8 @@ const BlogsComponents = () => {
               )}
             </div>
           ))}
-          {industrial?.slice(0, 1)?.map((article: NewsArticle, index) => (
-            <div key={index}>
+          {industrial?.slice(0, 2)?.map((article: NewsArticle, index) => (
+            <div key={index} className="mt-5">
               <Image
                 src={article?.image}
                 width={1900}
@@ -203,7 +208,7 @@ const BlogsComponents = () => {
               <h2 className="text-2xl font-semibold text-gray-700">
                 <Link
                   className="hover:underline hover:text-purple-500"
-                  href={"https://screenrant.com/the-studio-episode-4-review/"}
+                  href={article?.url}
                 >
                   {article?.title}
                 </Link>
@@ -232,13 +237,11 @@ const BlogsComponents = () => {
             </div>
           ))}
         </div>
-
-        {/* ==================search and rescently posted========================  */}
-        <div className=" max-w-[30%] mt-5 order-1 md:order-2">
+        <div className="md:w-[30%] sm:w-full order-1 md:order-2 mt-5">
           <Input
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search haere"
-            className="max-w-lg"
+            placeholder="Search here"
+            className="w-full"
           ></Input>
           <div>
             <h2 className="text-2xl pt-5">Categories</h2>
@@ -256,18 +259,227 @@ const BlogsComponents = () => {
             </div>
             <div className="flex justify-between pt-3 ">
               <p className="text-sm md:text-sm lg:text-lg text-gray-700 ">
-                Handmade
+                Recently Posted
               </p>{" "}
-              <p>2</p>
+              <p>{recentlyPosted}</p>
             </div>
             <div className="flex justify-between pt-3">
               <p className="text-sm md:text-sm lg:text-lg text-gray-700 ">
-                Interior
+                Recently Updated
               </p>{" "}
-              <p>2</p>
+              <p>{recentlyUpdated}</p>
             </div>
           </div>
           <div>
+            {searchQuery === "" ? (
+              <div>
+                {" "}
+                <h2 className="text-2xl pt-10">Recently Posted</h2>
+                <div>
+                  {education
+                    ?.slice(0, 3)
+                    ?.map((article: NewsArticle, index) => (
+                      <div
+                        key={index}
+                        className="mt-5 flex flex-col md:flex-row gap-2"
+                      >
+                        <Image
+                          src={article?.image}
+                          width={100}
+                          height={100}
+                          priority={true}
+                          alt="blogImage"
+                          className="rounded-lg"
+                        ></Image>
+                        <div className="">
+                          <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                            <Link
+                              className="hover:underline hover:text-purple-500"
+                              href={article?.url}
+                            >
+                              {article?.title}
+                            </Link>
+                          </h2>
+                          <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                            {" "}
+                            {article?.publishedAt}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+                <div>
+                  {industrial
+                    ?.slice(0, 2)
+                    ?.map((article: NewsArticle, index) => (
+                      <div
+                        key={index}
+                        className="mt-5 flex flex-col md:flex-row gap-2  "
+                      >
+                        <Image
+                          src={article?.image}
+                          width={100}
+                          height={1300}
+                          priority={true}
+                          alt="blogImage"
+                          className="rounded-lg "
+                        ></Image>
+                        <div className="">
+                          <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                            <Link
+                              className="hover:underline hover:text-purple-500"
+                              href={article?.url}
+                            >
+                              {article?.title}
+                            </Link>
+                          </h2>
+                          <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                            {" "}
+                            {article?.publishedAt}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+                <h2 className="text-2xl pt-10">Recently Updates</h2>
+                <div>
+                  {industrial
+                    ?.slice(2, 4)
+                    ?.map((article: NewsArticle, index) => (
+                      <div
+                        key={index}
+                        className="mt-5 flex flex-col md:flex-row gap-2  "
+                      >
+                        <Image
+                          src={article?.image}
+                          width={100}
+                          height={1300}
+                          priority={true}
+                          alt="blogImage"
+                          className="rounded-lg "
+                        ></Image>
+                        <div className="">
+                          <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                            <Link
+                              className="hover:underline hover:text-purple-500"
+                              href={article?.url}
+                            >
+                              {article?.title}
+                            </Link>
+                          </h2>
+                          <div className="flex items-center  text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                            {" "}
+                            {article?.publishedAt}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ) : (
+              <div>
+                {" "}
+                <h2 className="text-2xl pt-10">Search Result</h2>
+                <div>
+                  {educationFiltered?.map((article: NewsArticle, index) => (
+                    <div
+                      key={index}
+                      className="mt-5 flex flex-col md:flex-row gap-2"
+                    >
+                      <Image
+                        src={article?.image}
+                        width={100}
+                        height={100}
+                        priority={true}
+                        alt="blogImage"
+                        className="rounded-lg"
+                      ></Image>
+                      <div className="">
+                        <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                          <Link
+                            className="hover:underline hover:text-purple-500"
+                            href={article?.url}
+                          >
+                            {article?.title}
+                          </Link>
+                        </h2>
+                        <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                          {" "}
+                          {article?.publishedAt}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  {industrialFiltered?.map((article: NewsArticle, index) => (
+                    <div
+                      key={index}
+                      className="mt-5 flex flex-col md:flex-row gap-2  "
+                    >
+                      <Image
+                        src={article?.image}
+                        width={100}
+                        height={1300}
+                        priority={true}
+                        alt="blogImage"
+                        className="rounded-lg "
+                      ></Image>
+                      <div className="">
+                        <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                          <Link
+                            className="hover:underline hover:text-purple-500"
+                            href={article?.url}
+                          >
+                            {article?.title}
+                          </Link>
+                        </h2>
+                        <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                          {" "}
+                          {article?.publishedAt}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <h2 className="text-2xl pt-10">Recently Updates</h2>
+                <div>
+                  {industrial
+                    ?.slice(2, 4)
+                    ?.map((article: NewsArticle, index) => (
+                      <div
+                        key={index}
+                        className="mt-5 flex flex-col md:flex-row gap-2  "
+                      >
+                        <Image
+                          src={article?.image}
+                          width={100}
+                          height={1300}
+                          priority={true}
+                          alt="blogImage"
+                          className="rounded-lg "
+                        ></Image>
+                        <div className="">
+                          <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                            <Link
+                              className="hover:underline hover:text-purple-500"
+                              href={article?.url}
+                            >
+                              {article?.title}
+                            </Link>
+                          </h2>
+                          <div className="flex items-center  text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                            {" "}
+                            {article?.publishedAt}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </div>
+          {/* <div>
             {" "}
             <h2 className="text-2xl pt-10">Recently Posted</h2>
             <div>
@@ -288,12 +500,12 @@ const BlogsComponents = () => {
                     <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
                       <Link
                         className="hover:underline hover:text-purple-500"
-                        href={"https://typeforyou.org/vanguard-529/"}
+                        href={article?.url}
                       >
                         {article?.title}
                       </Link>
                     </h2>
-                    <div className="flex items-center  text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                    <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
                       {" "}
                       {article?.publishedAt}
                     </div>
@@ -302,7 +514,7 @@ const BlogsComponents = () => {
               ))}
             </div>
             <div>
-              {industrial?.slice(0, 5)?.map((article: NewsArticle, index) => (
+              {industrial?.slice(0, 2)?.map((article: NewsArticle, index) => (
                 <div
                   key={index}
                   className="mt-5 flex flex-col md:flex-row gap-2  "
@@ -319,9 +531,39 @@ const BlogsComponents = () => {
                     <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
                       <Link
                         className="hover:underline hover:text-purple-500"
-                        href={
-                          "https://screenrant.com/the-studio-episode-4-review/"
-                        }
+                        href={article?.url}
+                      >
+                        {article?.title}
+                      </Link>
+                    </h2>
+                    <div className="flex items-center line-clamp-1 text-xs sm:text-sm md:text-sm lg:text-lg text-gray-700 ">
+                      {" "}
+                      {article?.publishedAt}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <h2 className="text-2xl pt-10">Recently Updates</h2>
+            <div>
+              {industrial?.slice(2, 4)?.map((article: NewsArticle, index) => (
+                <div
+                  key={index}
+                  className="mt-5 flex flex-col md:flex-row gap-2  "
+                >
+                  <Image
+                    src={article?.image}
+                    width={100}
+                    height={1300}
+                    priority={true}
+                    alt="blogImage"
+                    className="rounded-lg "
+                  ></Image>
+                  <div className="">
+                    <h2 className="text-lg font-semibold text-gray-700 line-clamp-1">
+                      <Link
+                        className="hover:underline hover:text-purple-500"
+                        href={article?.url}
                       >
                         {article?.title}
                       </Link>
@@ -334,7 +576,7 @@ const BlogsComponents = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

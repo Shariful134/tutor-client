@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,26 +12,22 @@ import { toast } from "sonner";
 
 const StudentBookingsComponents = () => {
   const [allBookings, setAllBookings] = useState<TBooking[] | []>([]);
-
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useUser();
 
   //data fetching
   useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      const allbookings = await getAllBookings();
-      const currentBooking = allbookings?.data?.filter(
-        (item: any) => item?.student?.email === user?.userEmail
-      );
-
-      setAllBookings(currentBooking);
+    const dataFetch = async () => {
+      const AllBookingsData = await getAllBookings();
+      setAllBookings(AllBookingsData?.data);
     };
-    fetchData();
-    setLoading(false);
-  }, [loading]);
+    dataFetch();
+  }, []);
 
-  console.log(allBookings);
+  const currentBookings = allBookings?.filter(
+    (item: any) => item?.student?.email === user?.userEmail
+  );
+
   //handle Booking cancel
   const handleBookingCancel = async (id: string) => {
     setLoading(true);
@@ -153,7 +150,7 @@ const StudentBookingsComponents = () => {
       Request for Bookings
       <div>
         <div className="pt-5">
-          <NMTable columns={columns} data={allBookings || []}></NMTable>
+          <NMTable columns={columns} data={currentBookings || []}></NMTable>
         </div>
       </div>
     </div>

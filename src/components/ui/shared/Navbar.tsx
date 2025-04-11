@@ -72,7 +72,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar bg-gray-200 shadow-sm px-8 fixed z-1 ">
+    <div className="navbar  bg-gray-200 shadow-sm px-10 fixed z-1 ">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden ">
@@ -158,8 +158,8 @@ export default function Navbar() {
           ></Image>
         </a>
       </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 flex justify-center items-center gap-5">
+      <div className="navbar-end hidden lg:flex ">
+        <ul className="menu menu-horizontal px-1 flex  justify-center items-center gap-5">
           <Link
             className={
               pathname == "/"
@@ -212,7 +212,7 @@ export default function Navbar() {
           </Link>
         </ul>
       </div>
-      <div className="navbar-end">
+      <div className={user ? "navbar-end lg:w-15" : "navbar-end lg:w-25"}>
         {user ? (
           <>
             <DropdownMenu>
@@ -225,7 +225,7 @@ export default function Navbar() {
                   )}
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="border border-gray-400 bg-white mt-2 ">
+              <DropdownMenuContent className="border border-gray-400 bg-white mt-2 mr-2 ">
                 <DropdownMenuLabel className="font-semibold">
                   <div className="flex justify-center flex-col items-center gap-2">
                     <Avatar className="size-10 rouded-full ">
@@ -266,7 +266,7 @@ export default function Navbar() {
           <Link href={"/login"}>
             <Button
               variant="outline"
-              className="roudend-full btn cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+              className="roudend-full btn  cursor-pointer border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
             >
               SignIn
             </Button>

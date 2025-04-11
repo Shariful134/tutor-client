@@ -59,6 +59,7 @@ export function NMTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className="bg-gray-100"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >

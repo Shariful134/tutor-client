@@ -16,10 +16,7 @@ import { BookingUpdateComponent } from "./BookingUpdateComponent";
 const TutorBookingsHistoryComponents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
-  const [test, setTest] = useState<TBooking[] | []>([]);
-
   const [reFetch, setReFectch] = useState<boolean>(false);
-
   const [loggedId, setLoggedId] = useState<string | "">("");
 
   const { user } = useUser();
@@ -40,29 +37,27 @@ const TutorBookingsHistoryComponents = () => {
 
         //get Booking
         const allbookings = await getAllBookings();
-        setTest(allbookings?.data);
-        const currentBookings = allbookings?.data?.filter(
-          (booking: TBooking) =>
-            booking.student?._id === loggedUser?._id &&
-            booking.status === "Paid"
-        );
 
-        setBookings(currentBookings);
+        setBookings(allbookings?.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-    // if (email) {
-    //   fetchData();
-    // }
   }, [email, reFetch]);
 
-  console.log(bookings);
-  console.log("test:", email);
+  const currentBookings = bookings?.filter(
+    (booking: TBooking) =>
+      booking.tutor?.email === email && booking.status === "Paid"
+  );
 
-  const invoices = bookings?.map((booking: TBooking) => ({
+  const totalEarnings = currentBookings?.reduce((acc, booking) => {
+    return acc + Number(booking?.totalPrice || 0);
+  }, 0);
+  console.log("currentBookings: ", currentBookings);
+
+  const invoices = currentBookings?.map((booking: TBooking) => ({
     name: booking.student?.name,
     tutorName: booking.tutor?.name,
     transactionID: booking?.transaction?.id,
@@ -77,10 +72,8 @@ const TutorBookingsHistoryComponents = () => {
     action: "",
     _id: booking._id,
   }));
-  // console.log("invoices1: ", bookings);
 
   const handleBookingCancel = async (id: string) => {
-    console.log(id);
     try {
       const res = await cancelBooking(id);
       if (res.success) {
@@ -186,7 +179,7 @@ const TutorBookingsHistoryComponents = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 ">
-                      {bookings?.length === 0 && (
+                      {currentBookings?.length === 0 && (
                         <tr className="border-b-black bg-gray-100">
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
@@ -204,7 +197,7 @@ const TutorBookingsHistoryComponents = () => {
                         </tr>
                       )}
                       {invoices?.map((booking, index) => (
-                        <tr key={index} className="border-b-black">
+                        <tr key={index} className="border-b-black bg-gray-100">
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                             <div className="inline-flex items-center gap-x-3">
                               <span>{booking.name}</span>
@@ -269,21 +262,31 @@ const TutorBookingsHistoryComponents = () => {
                             {booking.totalPrice} BDT
                           </td>
                           <td className="px-4 py-4 text-sm whitespace-nowrap">
-                            <div className="flex items-center gap-x-6">
-                              <BookingUpdateComponent
-                                setReFectch={setReFectch}
-                                id={booking._id}
-                              ></BookingUpdateComponent>
-                              <button
-                                onClick={() => handleBookingCancel(booking._id)}
-                                className=" transition-colors cursor-pointer btn btn-sm duration-200  inline-flex items-center px-3 py-1 border-0  rounded-md gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800 focus:outline-none"
-                              >
-                                Cancel
-                              </button>
-                            </div>
+                            <button
+                              onClick={() => handleBookingCancel(booking._id)}
+                              className=" transition-colors cursor-pointer btn btn-sm duration-200  inline-flex items-center px-3 py-1 border-0  rounded-md gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800 focus:outline-none"
+                            >
+                              Cancel
+                            </button>
                           </td>
                         </tr>
                       ))}
+                      <tr className="border-b-black">
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap">
+                          <span className="font-semibold">Subtotal :</span>{" "}
+                          {totalEarnings} BDT
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

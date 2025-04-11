@@ -23,7 +23,7 @@ const BookingsHistoryComponents = () => {
 
   const { user } = useUser();
   const email = user?.userEmail;
-
+  console.log("email", email);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,6 +59,10 @@ const BookingsHistoryComponents = () => {
     }
   }, [email, reFetch]);
 
+  const totalEarnings = bookings?.reduce((accu, booking) => {
+    return accu + (Number(booking.totalPrice) || 0);
+  }, 0);
+
   const invoices = bookings?.map((booking: TBooking) => ({
     name: booking.student?.name,
     tutorName: booking.tutor?.name,
@@ -74,7 +78,7 @@ const BookingsHistoryComponents = () => {
     action: "",
     _id: booking._id,
   }));
-  // console.log("invoices1: ", bookings);
+  console.log("invoices1: ", bookings);
 
   const handleBookingCancel = async (id: string) => {
     console.log(id);
@@ -184,7 +188,7 @@ const BookingsHistoryComponents = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 ">
                       {invoices?.map((booking, index) => (
-                        <tr key={index} className="border-b-black">
+                        <tr key={index} className="border-b-black bg-gray-200">
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                             <div className="inline-flex items-center gap-x-3">
                               <span>{booking.name}</span>
@@ -264,6 +268,22 @@ const BookingsHistoryComponents = () => {
                           </td>
                         </tr>
                       ))}
+                      <tr className="border-b-black text-start">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td className="text-end pr-7 text-sm">
+                          <span className="font-semibold">SubTotal</span>:{" "}
+                          {totalEarnings} BTD
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
