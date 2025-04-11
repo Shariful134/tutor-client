@@ -147,7 +147,7 @@ const BookingsComponent = ({ tutorId }: { tutorId: string }) => {
     );
   }
   return (
-    <div className="flex flex-col md:flex-row px-10 gap-5 justify-center">
+    <div className="flex flex-col md:flex-row px-10 gap-5 justify-center mb-15">
       <div className="pt-5 p-5 shadow-2xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

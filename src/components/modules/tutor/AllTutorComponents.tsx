@@ -122,7 +122,11 @@ const AllTutorComponents = () => {
 
           // filter out the checking accepted request
           const acceptedTutorId = bookingsData?.data
-            ?.filter((item: any) => item.bookingRequest === true)
+            ?.filter(
+              (item: any) =>
+                item.bookingRequest === true &&
+                item.student?._id === loggedUser[0]?._id
+            )
             .map((item: any) => item.tutor);
           setAccetedTutors(acceptedTutorId);
           setLoading(false);

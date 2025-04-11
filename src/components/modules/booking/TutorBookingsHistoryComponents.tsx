@@ -16,6 +16,7 @@ import { BookingUpdateComponent } from "./BookingUpdateComponent";
 const TutorBookingsHistoryComponents = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
+  const [test, setTest] = useState<TBooking[] | []>([]);
 
   const [reFetch, setReFectch] = useState<boolean>(false);
 
@@ -28,11 +29,9 @@ const TutorBookingsHistoryComponents = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         //get User
         const allUsers = await getAllUsers();
-
-        const loggedUser = allUsers?.data.find(
+        const loggedUser = allUsers?.data?.find(
           (user: IUsers) => user.email === email
         );
         if (loggedUser) {
@@ -41,23 +40,27 @@ const TutorBookingsHistoryComponents = () => {
 
         //get Booking
         const allbookings = await getAllBookings();
+        setTest(allbookings?.data);
         const currentBookings = allbookings?.data?.filter(
           (booking: TBooking) =>
             booking.student?._id === loggedUser?._id &&
             booking.status === "Paid"
         );
+
         setBookings(currentBookings);
         setLoading(false);
-        setReFectch(false);
       } catch (error) {
         console.log(error);
       }
     };
-
-    if (email) {
-      fetchData();
-    }
+    fetchData();
+    // if (email) {
+    //   fetchData();
+    // }
   }, [email, reFetch]);
+
+  console.log(bookings);
+  console.log("test:", email);
 
   const invoices = bookings?.map((booking: TBooking) => ({
     name: booking.student?.name,
@@ -101,10 +104,10 @@ const TutorBookingsHistoryComponents = () => {
     <div className="pt-5">
       <h2>BookingHistory</h2>
       <div className="pt-5 ">
-        <section className="container mx-auto">
+        <section className="container ps-8">
           <div className="flex flex-col">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+              <div className="inline-block min-w-full py-2 ">
                 <div className="overflow-hidden ">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-400/55 dark:bg-gray-800 border-b-black">
@@ -183,6 +186,23 @@ const TutorBookingsHistoryComponents = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 ">
+                      {bookings?.length === 0 && (
+                        <tr className="border-b-black bg-gray-100">
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4 text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap">
+                            No Data
+                          </td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                          <td className="px-4 py-4  text-sm font-medium text-gray-700 text-center dark:text-gray-200 whitespace-nowrap"></td>
+                        </tr>
+                      )}
                       {invoices?.map((booking, index) => (
                         <tr key={index} className="border-b-black">
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">

@@ -12,7 +12,7 @@ import { TBooking } from "@/types/bookings";
 import {
   acceptBooking,
   cancelBooking,
-  getAllBooking,
+  getAllBookings,
 } from "@/services/request";
 
 const BookingRequest = () => {
@@ -20,17 +20,26 @@ const BookingRequest = () => {
   const [bookings, setBookings] = useState<TBooking[] | []>([]);
   const [users, setUsers] = useState<ITutor[] | []>([]);
 
-  const getbooking = async () => {
-    const databooking = await getAllBooking();
+  const handleBookingRequest = async (id: string) => {
+    await acceptBooking(id);
+    const databooking = await getAllBookings();
     setBookings(databooking?.data);
   };
+
+  //handle Booking cancel
+  const handleBookingCancel = async (id: string) => {
+    await cancelBooking(id);
+    const databooking = await getAllBookings();
+    setBookings(databooking?.data);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const [usersData, bookingsData] = await Promise.all([
           getAllUsers(),
-          getAllBooking(),
+          getAllBookings(),
         ]);
 
         setUsers(usersData?.data);
@@ -43,24 +52,13 @@ const BookingRequest = () => {
     fetchData();
   }, []);
 
-  const currentTutor = users?.find(
-    (item: any) => item.email === user?.userEmail
-  );
+  const currentTutor = users?.find((item) => item.email === user?.userEmail);
+
   const BookingTutor = bookings?.filter(
-    (item: any) => item.tutor._id === currentTutor?._id
+    (item) => item?.tutor?._id === currentTutor?._id
   );
 
-  //handle Booking Request
-  const handleBookingRequest = async (id: string) => {
-    await acceptBooking(id);
-    await getbooking();
-  };
-  //handle Booking cancel
-  const handleBookingCancel = async (id: string) => {
-    await cancelBooking(id);
-    await getbooking();
-  };
-
+  console.log(BookingTutor);
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "student",
@@ -104,12 +102,12 @@ const BookingRequest = () => {
         return (
           <div className="flex items-center  space-x-3">
             {row.original.bookingRequest ? (
-              <p className="text-green-500 bg-green-300/25 px-2  rounded">
+              <p className="btn text-green-500 bg-green-300/25 font-normal px-2 py-1 h-6 border-0 rounded">
                 Accepted
               </p>
             ) : (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
-                Request
+                Requested
               </p>
             )}
           </div>
@@ -122,12 +120,14 @@ const BookingRequest = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center space-x-2">
-            <button
-              onClick={() => handleBookingRequest(row?.original?._id)}
-              className="btn text-green-500 bg-green-300/25 font-normal px-2 py-1 h-6 border-0 rounded"
-            >
-              Accepted
-            </button>
+            {!row.original.bookingRequest && (
+              <button
+                onClick={() => handleBookingRequest(row?.original?._id)}
+                className="btn text-green-500 bg-green-300/25 font-normal px-2 py-1 h-6 border-0 rounded"
+              >
+                Accepted
+              </button>
+            )}
 
             <button
               onClick={() => handleBookingCancel(row?.original?._id)}
@@ -140,6 +140,7 @@ const BookingRequest = () => {
       },
     },
   ];
+
   return (
     <div>
       Request for Bookings

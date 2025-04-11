@@ -855,7 +855,7 @@ const HomeComponent = () => {
                   What if I’m not satisfied with my tutor?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  Yes, you can cancel a session from your dashboard. If you're
+                  Yes, you can cancel a session from your dashboard. If you are
                   not satisfied with your tutor, contact support—we’ll help you
                   reschedule or find a better match.
                 </AccordionContent>
@@ -865,9 +865,9 @@ const HomeComponent = () => {
                   What if I’m not satisfied with my tutor?
                 </AccordionTrigger>
                 <AccordionContent className="text-sm md:text-sm lg:text-lg text-gray-700 mt-4 max-w-3xl pb-5">
-                  If you're not satisfied with your tutor, you can request a new
+                  If you not satisfied with your tutor, you can request a new
                   match or contact support for a refund or alternative tutor
-                  options. We're here to help!
+                  options. We are here to help!
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="item-3">

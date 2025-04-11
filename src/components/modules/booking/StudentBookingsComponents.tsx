@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NMTable } from "@/components/ui/core/NMTable";
+import { useUser } from "@/context/UserContext";
 import { cancelBooking, getAllBookings } from "@/services/request";
 import { TBooking } from "@/types/bookings";
 import { ColumnDef } from "@tanstack/react-table";
@@ -9,20 +10,27 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const StudentBookingsComponents = () => {
-  const [bookings, setBookings] = useState<TBooking[] | []>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [allBookings, setAllBookings] = useState<TBooking[] | []>([]);
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const { user } = useUser();
+
+  //data fetching
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       const allbookings = await getAllBookings();
-      setBookings(allbookings?.data);
+      const currentBooking = allbookings?.data?.filter(
+        (item: any) => item?.student?.email === user?.userEmail
+      );
+
+      setAllBookings(currentBooking);
     };
     fetchData();
     setLoading(false);
   }, [loading]);
-  console.log("bookings: ", bookings);
 
+  console.log(allBookings);
   //handle Booking cancel
   const handleBookingCancel = async (id: string) => {
     setLoading(true);
@@ -48,13 +56,13 @@ const StudentBookingsComponents = () => {
           <div className="flex items-center space-x-3">
             <Avatar>
               <AvatarImage
-                src={row.original.tutor.profileImage}
-                alt={row.original.tutor.name}
+                src={row?.original?.tutor?.profileImage}
+                alt={row?.original?.tutor?.name}
               />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="text-start font-medium ">
-              {row.original.tutor.name}
+              {row?.original?.tutor?.name}
             </div>
           </div>
         );
@@ -64,7 +72,7 @@ const StudentBookingsComponents = () => {
       accessorKey: "subject",
       header: () => <div className="text-start w-66">Subjects</div>,
       cell: ({ row }) => {
-        const subjects = row.original.tutor.subjects;
+        const subjects = row?.original?.tutor?.subjects;
 
         return (
           <div className="flex items-center space-x-3">
@@ -79,12 +87,11 @@ const StudentBookingsComponents = () => {
       accessorKey: "day",
       header: () => <div className="text-start  w-66">Days</div>,
       cell: ({ row }) => {
-        console.log("availability: ", row.original.tutor.availability);
-        const days = row.original.tutor.availability.map((days) => days.day);
+        const days = row.original?.tutor?.availability?.map((days) => days.day);
 
         return (
           <div className="flex items-center space-x-3">
-            <div className="text-right font-medium">{days.join(", ")}</div>
+            <div className="text-right font-medium">{days?.join(", ")}</div>
           </div>
         );
       },
@@ -93,11 +100,13 @@ const StudentBookingsComponents = () => {
       accessorKey: "time",
       header: () => <div className="text-start  w-66">Time</div>,
       cell: ({ row }) => {
-        const times = row.original.tutor.availability.map((item) => item.time);
+        const times = row?.original?.tutor?.availability?.map(
+          (item) => item.time
+        );
 
         return (
           <div className="flex items-center space-x-3">
-            <div className="text-right font-medium ">{times.join(", ")}</div>
+            <div className="text-right font-medium ">{times?.join(", ")}</div>
           </div>
         );
       },
@@ -109,7 +118,7 @@ const StudentBookingsComponents = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center  space-x-3">
-            {row.original.bookingRequest ? (
+            {row?.original?.bookingRequest ? (
               <p className="text-green-500 bg-green-300/25 px-2  rounded">
                 Accepted
               </p>
@@ -144,7 +153,7 @@ const StudentBookingsComponents = () => {
       Request for Bookings
       <div>
         <div className="pt-5">
-          <NMTable columns={columns} data={bookings || []}></NMTable>
+          <NMTable columns={columns} data={allBookings || []}></NMTable>
         </div>
       </div>
     </div>
