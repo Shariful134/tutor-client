@@ -10,32 +10,34 @@ import { Input } from "@/components/ui/input";
 import { MdDateRange } from "react-icons/md";
 import { SkeletonLoading } from "@/components/ui/shared/SkeletonLoading";
 import { useUser } from "@/context/UserContext";
-import { Item } from "@radix-ui/react-dropdown-menu";
 
 const BlogsComponents = () => {
   const [education, setEducation] = useState<NewsArticle[] | []>([]);
+  const [searchNews, setSearchNews] = useState<NewsArticle[] | []>([]);
   const [industrial, setIndustrial] = useState<NewsArticle[] | []>([]);
   const [educationData, setEducationData] = useState(false);
   const [industrialData, setIndustrialData] = useState(false);
-  const [blogs, setBlogs] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { setIsLoading, isLoading } = useUser();
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `https://newsapi.org/v2/everything?q=education%20tips&language=en&sortBy=publishedAt&apiKey=
-d09cf0c70d334857803d42a640b4e7bb
-`
+          `https://gnews.io/api/v4/search?q=education%20tips&lang=en&max=10&apikey=33b6dfeb530be2d1acbede3ad6af7965`
         );
+        const searchData = await fetch(
+          `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&country=bd&max=10&token=33b6dfeb530be2d1acbede3ad6af7965`
+        );
+
         const industrialRresponse = await fetch(
-          `https://newsapi.org/v2/everything?q=industry&language=en&sortBy=publishedAt&apiKey=
-d09cf0c70d334857803d42a640b4e7bb
-`
+          "https://gnews.io/api/v4/search?q=industrial&lang=en&max=10&apikey=33b6dfeb530be2d1acbede3ad6af7965"
         );
 
         const industrialResult = await industrialRresponse.json();
         const educationResult = await response.json();
+        const searchResult = await searchData.json();
+        setSearchNews(searchResult.articles || []);
         setIndustrial(industrialResult?.articles || []);
         setEducation(educationResult?.articles || []);
         setIsLoading(false);
@@ -45,6 +47,8 @@ d09cf0c70d334857803d42a640b4e7bb
     };
     fetchData();
   }, []);
+
+  console.log("searchNews:", searchNews);
   const curretntdate = new Date().toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
@@ -53,25 +57,25 @@ d09cf0c70d334857803d42a640b4e7bb
 
   // educational data
   const contentword = education?.map((item: NewsArticle) =>
-    item.content.split("").slice(0, 2)
+    item.content.split("").slice(0, 20)
   );
   const contentwords = industrial?.map((item: NewsArticle) =>
     item.content.split("").slice(0, 100)
   );
   // industrial data
   const contentwordIndustrial = education?.map((item: NewsArticle) =>
-    item.content.split("").slice(0, 2)
+    item.content.split("").slice(0, 20)
   );
   const contentwordsIndustrial = industrial?.map((item: NewsArticle) =>
     item.content.split("").slice(0, 100)
   );
 
-  const educationFiltered = education.filter((item) =>
-    item.title.toLowerCase().includes(blogs.toLowerCase())
-  );
-  const industrialFiltered = industrial.filter((item) =>
-    item.title.toLowerCase().includes(blogs.toLowerCase())
-  );
+  // const educationFiltered = education.filter((item) =>
+  //   item.title.toLowerCase().includes(blogs.toLowerCase())
+  // );
+  // const industrialFiltered = industrial.filter((item) =>
+  //   item.title.toLowerCase().includes(blogs.toLowerCase())
+  // );
 
   if (isLoading)
     return (
@@ -111,10 +115,10 @@ d09cf0c70d334857803d42a640b4e7bb
       </div>
       <div className="flex flex-col md:flex-row gap-15 sm:justify-center">
         <div className="max-w-[70%] order-2 md:order-1">
-          {education?.slice(13, 14)?.map((article: NewsArticle, index) => (
-            <div key={index} className="mt-5">
+          {education?.slice(1, 2)?.map((article: NewsArticle, index) => (
+            <div key={index} className="mt-5 mb-5">
               <Image
-                src={article?.urlToImage}
+                src={article?.image}
                 width={1900}
                 height={1300}
                 priority={true}
@@ -169,10 +173,10 @@ d09cf0c70d334857803d42a640b4e7bb
               )}
             </div>
           ))}
-          {industrial?.slice(7, 8)?.map((article: NewsArticle, index) => (
+          {industrial?.slice(0, 1)?.map((article: NewsArticle, index) => (
             <div key={index}>
               <Image
-                src={article?.urlToImage}
+                src={article?.image}
                 width={1900}
                 height={100}
                 priority={true}
@@ -232,7 +236,7 @@ d09cf0c70d334857803d42a640b4e7bb
         {/* ==================search and rescently posted========================  */}
         <div className=" max-w-[30%] mt-5 order-1 md:order-2">
           <Input
-            onChange={(e) => setBlogs(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search haere"
             className="max-w-lg"
           ></Input>
@@ -267,13 +271,13 @@ d09cf0c70d334857803d42a640b4e7bb
             {" "}
             <h2 className="text-2xl pt-10">Recently Posted</h2>
             <div>
-              {education?.slice(0, 2)?.map((article: NewsArticle, index) => (
+              {education?.slice(0, 3)?.map((article: NewsArticle, index) => (
                 <div
                   key={index}
                   className="mt-5 flex flex-col md:flex-row gap-2"
                 >
                   <Image
-                    src={article?.urlToImage}
+                    src={article?.image}
                     width={100}
                     height={100}
                     priority={true}
@@ -298,13 +302,13 @@ d09cf0c70d334857803d42a640b4e7bb
               ))}
             </div>
             <div>
-              {industrial?.slice(6, 10)?.map((article: NewsArticle, index) => (
+              {industrial?.slice(0, 5)?.map((article: NewsArticle, index) => (
                 <div
                   key={index}
                   className="mt-5 flex flex-col md:flex-row gap-2  "
                 >
                   <Image
-                    src={article?.urlToImage}
+                    src={article?.image}
                     width={100}
                     height={1300}
                     priority={true}

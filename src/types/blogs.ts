@@ -3,11 +3,11 @@ export interface NewsArticle {
   title: string;
   description: string;
   url: string;
-  urlToImage: string;
+  image: string;
   publishedAt: string;
   content: string;
   source: {
-    id: string | null;
+    url: string | null;
     name: string;
   };
 }
