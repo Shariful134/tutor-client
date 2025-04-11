@@ -3,19 +3,19 @@ import { Input } from "../input";
 
 const Footer = () => {
   return (
-    <>
+    <div className="mt-5">
       <hr className="text-gray-300" />
-      <footer className="footer sm:footer-horizontal  p-10">
+      <footer className="footer sm:footer-horizontal text-sm md:text-sm lg:text-lg p-10 ">
         <nav>
           <h6 className="font-semibold text-lg text-black">TutorLink</h6>
-          <a className="link link-hover">
+          <a className="link link-hover text-sm md:text-sm lg:text-lg">
             236 5th SE Avenue, New York NY10000,
             <br /> Dhaka mirpur Road No.17, <br />
             Dhaka Bangladesh
           </a>
         </nav>
         <nav>
-          <h6 className="footer-title">Link</h6>
+          <h6 className="footer-title ">Link</h6>
           <Link href={"/"} className="hover:underline">
             Home
           </Link>
@@ -57,7 +57,7 @@ const Footer = () => {
           </div>
         </nav>
       </footer>
-    </>
+    </div>
   );
 };
 

@@ -311,7 +311,7 @@ const HomeComponent = () => {
           </div>
           <Button
             variant="outline"
-            className="roudend-full border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+            className="roudend-full mt-1 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
           >
             Explore Tutors
           </Button>
@@ -516,7 +516,7 @@ const HomeComponent = () => {
 
           <Button
             variant="outline"
-            className="roudend-full border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
+            className="roudend-full mt-2 border-0 bg-gray-300 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ..."
           >
             Start Learning
           </Button>
