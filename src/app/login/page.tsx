@@ -1,13 +1,14 @@
-// import dynamic from "next/dynamic";
+"use client";
+import dynamic from "next/dynamic";
 
-import LoginForm from "@/components/modules/auth/login/LoginForm";
+import React from "react";
 
-// const LoginForm = dynamic(
-//   () => import("@/components/modules/auth/login/LoginForm"),
-//   {
-//     ssr: false,
-//   }
-// );
+const LoginForm = dynamic(
+  () => import("@/components/modules/auth/login/LoginForm"),
+  {
+    ssr: false,
+  }
+);
 
 const Login = () => {
   return (

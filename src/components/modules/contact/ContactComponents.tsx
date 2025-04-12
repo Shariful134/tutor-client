@@ -41,7 +41,7 @@ const ContactComponents = () => {
         <h2 className="text-xl md:text-2xl lg:text-4xl text-center md:text-start max-w-[344px] font-semibold ">
           Get In Touch With Us
         </h2>
-        <p className="text-sm md:text-sm lg:text-lg  mt-4  max-w-[644px] text-center">
+        <p className="text-sm md:text-sm lg:text-lg  mt-4  max-w-[644px] text-center pb-20">
           For More Information About Our Product & Services. Please Feel Free To
           Drop Us An Email. Our Staff Always Be There To Help You Out. Do Not
           Hesitate!
