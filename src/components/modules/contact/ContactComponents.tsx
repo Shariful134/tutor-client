@@ -37,11 +37,11 @@ const ContactComponents = () => {
           </div>
         </div>
       </div>
-      <div className="mt-20 flex flex-col items-center justify-center">
+      <div className="mt-10 flex flex-col items-center justify-center">
         <h2 className="text-xl md:text-2xl lg:text-4xl text-center md:text-start max-w-[344px] font-semibold ">
           Get In Touch With Us
         </h2>
-        <p className="text-sm md:text-sm lg:text-lg  mt-4  max-w-[644px] text-center pb-20">
+        <p className="text-sm md:text-sm lg:text-lg  mt-4  max-w-[644px] text-center pb-10">
           For More Information About Our Product & Services. Please Feel Free To
           Drop Us An Email. Our Staff Always Be There To Help You Out. Do Not
           Hesitate!
